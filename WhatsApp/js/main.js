@@ -6,3 +6,19 @@ window.onload = () => {
     httpRequestMessage.headers.append("User-Agent", userAgent);
     webView.navigateWithHttpRequestMessage(httpRequestMessage);
 }
+
+window.matchMedia('(max-width: 600px)').addListener(() => {
+    var gutter = 'document.getElementsByClassName("_3HZor _3kF8H")[1].style.display = ';
+    var conversation = 'document.getElementsByClassName("_3HZor _2rI9W")[1].style.display = ';
+    var show = '"block";';
+    var hide = '"none";';
+    if (window.innerWidth > 600) {
+        webView.invokeScriptAsync('eval', gutter + show + conversation + show).start();
+    } else {
+        if (Windows.UI.Core.SystemNavigationManager.getForCurrentView().appViewBackButtonVisibility === Windows.UI.Core.AppViewBackButtonVisibility.visible) {
+            webView.invokeScriptAsync('eval', gutter + hide + conversation + show).start();
+        } else {
+            webView.invokeScriptAsync('eval', gutter + show + conversation + hide).start();
+        }
+    }
+});
