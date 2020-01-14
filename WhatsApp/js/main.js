@@ -15,6 +15,9 @@ window.onload = () => {
 
     webView.addEventListener('MSWebViewNavigationCompleted', () => {
         webView.invokeScriptAsync('eval',
+            'var style = document.createElement("style");' +
+            'style.appendChild(document.createTextNode("@media screen and (max-width:648px){._3fUe9 {min-width:0;}}"));' +
+            'document.head.appendChild(style);' +
             'var interval = setInterval(() => {' +
                 'var pane = document.getElementById("pane-side");' +
                 'if (pane) {' +
