@@ -1,5 +1,7 @@
 ﻿'use strict';
 
+var currentView = Windows.UI.Core.SystemNavigationManager.getForCurrentView();
+
 var gutter = 'document.getElementsByClassName("_3HZor _3kF8H")[1].style.display = ';
 var conversation = 'document.getElementsByClassName("_3HZor _2rI9W")[1].style.display = ';
 var show = '"block";';
@@ -25,6 +27,14 @@ window.onload = () => {
     webView.addEventListener('MSWebViewScriptNotify', () => {
         if (window.innerWidth < 600) {
             webView.invokeScriptAsync('eval', gutter + hide + conversation + show).start();
+            currentView.appViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.visible;
+            currentView.onbackrequested = function (event) {
+                if (currentView.appViewBackButtonVisibility === Windows.UI.Core.AppViewBackButtonVisibility.visible) {
+                    webView.invokeScriptAsync('eval', gutter + show + conversation + hide).start();
+                    currentView.appViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.collapsed;
+                    event.detail[0].handled = true;
+                }
+            };
         }
     });
 
@@ -33,6 +43,8 @@ window.onload = () => {
 window.matchMedia('(max-width: 600px)').addListener(() => {
     if (window.innerWidth > 600) {
         webView.invokeScriptAsync('eval', gutter + show + conversation + show).start();
+        currentView.appViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.collapsed;
+        currentView.onbackrequested = null;
     } else {
         if (Windows.UI.Core.SystemNavigationManager.getForCurrentView().appViewBackButtonVisibility === Windows.UI.Core.AppViewBackButtonVisibility.visible) {
             webView.invokeScriptAsync('eval', gutter + hide + conversation + show).start();
