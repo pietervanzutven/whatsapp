@@ -15,16 +15,14 @@ window.onload = () => {
         webView.invokeScriptAsync('eval',
             'var interval = setInterval(() => {' +
                 'var pane = document.getElementById("pane-side");' +
-                'console.log(pane);' +
                 'if (pane) {' +
-                    'console.log("Add Event!");' +
                     'pane.addEventListener("click",() => window.external.notify("pane_clicked"));' +
                     'clearInterval(interval);' +
                 '}' +
             '}, 1000);').start();
     });
 
-    webView.addEventListener('MSWebViewScriptNotify', (e) => {
+    webView.addEventListener('MSWebViewScriptNotify', () => {
         if (window.innerWidth < 600) {
             webView.invokeScriptAsync('eval', gutter + hide + conversation + show).start();
         }
