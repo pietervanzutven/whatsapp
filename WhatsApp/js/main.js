@@ -16,7 +16,11 @@ window.onload = () => {
     webView.addEventListener('MSWebViewNavigationCompleted', () => {
         webView.invokeScriptAsync('eval',
             'var style = document.createElement("style");' +
-            'style.appendChild(document.createTextNode(".-peIt{min-width:0;}@media screen and (max-width:648px){._3fUe9{min-width:0;}}@media screen and (max-width:660px){.landing-wrapper{min-width:0;}}"));' +
+            'style.appendChild(document.createTextNode("' + 
+                '.-peIt { min-width:0; }' +
+                '@media screen and (max-width:648px) { ._3fUe9 { min-width:0; } }' +
+                '@media screen and (max-width:660px) { .landing-wrapper { min-width:0; } }' +
+            '"));' +
             'document.head.appendChild(style);' +
             'var interval = setInterval(() => {' +
                 'var pane = document.getElementById("pane-side");' +
