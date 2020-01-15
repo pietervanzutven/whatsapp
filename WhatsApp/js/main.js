@@ -20,6 +20,7 @@ window.onload = () => {
                 '.-peIt { min-width:0; }' +
                 '@media screen and (max-width:648px) { ._3fUe9 { min-width:0; } }' +
                 '@media screen and (max-width:660px) { .landing-wrapper { min-width:0; } }' +
+                '@media screen and (max-width:600px) { ._2rI9W { display: none; } }' +
             '"));' +
             'document.head.appendChild(style);' +
             'var interval = setInterval(() => {' +
