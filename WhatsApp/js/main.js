@@ -2,8 +2,8 @@
 
 var currentView = Windows.UI.Core.SystemNavigationManager.getForCurrentView();
 
-var gutter = 'document.getElementsByClassName("_3HZor _3kF8H")[1].style.display = ';
-var conversation = 'document.getElementsByClassName("_3HZor _2rI9W")[1].style.display = ';
+var gutter = 'document.getElementsByClassName("_10V4p _3A_Ft")[1].style.display = ';
+var conversation = 'document.getElementsByClassName("_10V4p _1jxtm")[1].style.display = ';
 var show = '"block";';
 var hide = '"none";';
 
@@ -18,9 +18,9 @@ window.onload = () => {
             'var style = document.createElement("style");' +
             'style.appendChild(document.createTextNode("' + 
                 '.-peIt { min-width:0; }' +
-                '@media screen and (max-width:648px) { ._3fUe9 { min-width:0; } }' +
+                '@media screen and (max-width:648px) { ._1Jzz1 { min-width:0; } }' +
                 '@media screen and (max-width:660px) { .landing-wrapper { min-width:0; } }' +
-                '@media screen and (max-width:600px) { ._2rI9W { display: none; } }' +
+                '@media screen and (max-width:600px) { ._1jxtm { display: none; } }' +
             '"));' +
             'document.head.appendChild(style);' +
             'var interval = setInterval(() => {' +
