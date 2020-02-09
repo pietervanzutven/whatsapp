@@ -7,6 +7,11 @@ var conversation = 'document.getElementsByClassName("_10V4p _1jxtm")[1].style.di
 var show = '"block";';
 var hide = '"none";';
 
+var webpackFunctions = '';
+Windows.Storage.StorageFile.getFileFromApplicationUriAsync(Windows.Foundation.Uri('ms-appx:///js/webpack_functions.js'))
+    .then(file => Windows.Storage.FileIO.readTextAsync(file)
+    .then(text => webpackFunctions = text));
+
 window.onload = () => {
     var userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.45 Safari/537.36 Edg/79.0.309.30";
     var httpRequestMessage = new Windows.Web.Http.HttpRequestMessage(Windows.Web.Http.HttpMethod.get, new Windows.Foundation.Uri('https://web.whatsapp.com/'));
@@ -23,6 +28,7 @@ window.onload = () => {
                 '@media screen and (max-width:600px) { ._1jxtm { display: none; } }' +
             '"));' +
             'document.head.appendChild(style);' +
+            'webpackJsonp([0], ' + webpackFunctions + ');' +
             'var interval = setInterval(() => {' +
                 'var pane = document.getElementById("pane-side");' +
                 'if (pane) {' +
