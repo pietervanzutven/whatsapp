@@ -25,7 +25,6 @@ window.onload = () => {
                 '.-peIt { min-width:0; }' +
                 '@media screen and (max-width:648px) { ._1Jzz1 { min-width:0; } }' +
                 '@media screen and (max-width:660px) { .landing-wrapper { min-width:0; } }' +
-                '@media screen and (max-width:600px) { ._1jxtm { display: none; } }' +
             '"));' +
             'document.head.appendChild(style);' +
             'webpackJsonp([0], ' + webpackFunctions + ');' +
@@ -33,6 +32,10 @@ window.onload = () => {
                 'var pane = document.getElementById("pane-side");' +
                 'if (pane) {' +
                     'pane.addEventListener("click",() => window.external.notify("pane_clicked"));' +
+                    'console.log(window.innerWidth);' +
+                    'if (window.innerWidth < 600) {' +
+                        gutter + show + conversation + hide +
+                    '}' +
                     'clearInterval(interval);' +
                 '}' +
             '}, 1000);').start();
