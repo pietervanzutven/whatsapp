@@ -1,9 +1,7 @@
 ﻿'use strict';
 
-var currentView = Windows.UI.Core.SystemNavigationManager.getForCurrentView();
-
-var gutter = 'document.getElementsByClassName("_10V4p _3A_Ft")[1].style.display = ';
-var conversation = 'document.getElementsByClassName("_10V4p _1jxtm")[1].style.display = ';
+var gutter = 'document.getElementsByClassName("_1-iDe _1xXdX")[1].style.display = ';
+var conversation = 'document.getElementsByClassName("_1-iDe Wu52Z")[1].style.display = ';
 var show = '"block";';
 var hide = '"none";';
 
@@ -23,24 +21,24 @@ window.onload = () => {
             'var style = document.createElement("style");' +
             'style.appendChild(document.createTextNode("' + 
                 '.-peIt { min-width:0; }' +
-                '@media screen and (max-width:648px) { ._1Jzz1 { min-width:0; } }' +
+                '@media screen and (max-width:648px) { .h70RQ { min-width:0; } }' +
                 '@media screen and (max-width:660px) { .landing-wrapper { min-width:0; } }' +
             '"));' +
             'document.head.appendChild(style);' +
-            'webpackJsonp([0], ' + webpackFunctions + ');' +
             'var interval = setInterval(() => {' +
                 'var pane = document.getElementById("pane-side");' +
                 'if (pane) {' +
                     'pane.addEventListener("click",() => window.external.notify("pane_clicked"));' +
-                    'console.log(window.innerWidth);' +
                     'if (window.innerWidth < 600) {' +
                         gutter + show + conversation + hide +
                     '}' +
                     'clearInterval(interval);' +
                 '}' +
-            '}, 1000);').start();
+            '}, 1000);' +
+            'window.webpackJsonp[2][1].dgjijbgdai = ' + webpackFunctions + ';').start();
     });
 
+    var currentView = Windows.UI.Core.SystemNavigationManager.getForCurrentView();
     webView.addEventListener('MSWebViewScriptNotify', () => {
         if (window.innerWidth < 600) {
             webView.invokeScriptAsync('eval', gutter + hide + conversation + show).start();

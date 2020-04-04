@@ -1,125 +1,120 @@
-﻿{dgjijbgdai: function (e, t, n) {
+﻿function(e, t, a) {
     "use strict";
+    var n = a("cfjecfhbfg");
     Object.defineProperty(t, "__esModule", {
         value: !0
     }),
     t.default = function(e) {
         var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {};
-        return s.default.log("extendedFetch:", e)(),
-        f(e, t).catch(function(e) {
+        return u.default.log("extendedFetch:", e)(),
+        f(e, t).catch((function(e) {
             if ("AbortError" === e.name)
                 throw new r.default;
-            if (e instanceof o.HttpNetworkError)
+            if (e instanceof s.HttpNetworkError)
                 throw e;
-            throw new o.HttpNetworkError(e.message)
-        })
+            throw new s.HttpNetworkError(e.message)
+        }
+        ))
     }
     ,
     t.sharedFetch = f;
-    var r = c(n("cgijjjgici"))
-      , a = c(n("bcjafgaahj"))
-      , o = n("fdghiidhc")
-      , i = c(n("dcgheafecg"))
-      , u = c(n("dbhgiicheg"))
-      , s = c(n("bdiiahhjbe"))
-      , l = c(n("ciehajbjae"));
-    function c(e) {
-        return e && e.__esModule ? e : {
-            default: e
-        }
-    }
+    var i = n(a("bhfcfhafdj"))
+      , r = n(a("cgijjjgici"))
+      , o = n(a("bcjafgaahj"))
+      , s = a("fdghiidhc")
+      , d = n(a("dcgheafecg"))
+      , c = n(a("dbhgiicheg"))
+      , u = n(a("bdiiahhjbe"))
+      , l = n(a("ciehajbjae"));
     function f(e) {
         var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {};
-        return new Promise(function(n, r) {
+        return new Promise((function(a, n) {
             if (t.signal && t.signal.aborted)
-                r(new a.default("AbortError"));
+                n(new o.default("AbortError"));
             else {
-                var s = new XMLHttpRequest;
+                var r = new XMLHttpRequest;
                 if (t.signal) {
-                    var c = t.signal;
-                    c.addEventListener("abort", function e() {
-                        c.removeEventListener("abort", e),
-                        s.onreadystatechange = function() {}
+                    var u = t.signal;
+                    u.addEventListener("abort", (function e() {
+                        u.removeEventListener("abort", e),
+                        r.onreadystatechange = function() {}
                         ,
-                        s.abort(),
-                        r(new a.default("AbortError"))
-                    })
+                        r.abort(),
+                        n(new o.default("AbortError"))
+                    }
+                    ))
                 }
-                //var f = new u.default(t.headers || {});
+                //var f = new c.default(t.headers || {});
                 //(0,
-                //i.default)(f.keys(), function(e) {
+                //d.default)(f.keys(), (function(e) {
                 //    var t = f.get(e);
-                //    null != t && s.setRequestHeader(e, t)
-                //}),
-                null != t.onProgress && (s.onprogress = t.onProgress),
-                s.onreadystatechange = function() {
-                    if (0 !== s.readyState) {
-                        if (4 === s.readyState) {
-                            if (null == s.status)
-                                return void r(new Error("fetch error: no status"));
-                            if (0 === s.status || s.status >= 12e3)
-                                return void r(new Error(`fetch error: unexpected status ${s.status}`));
-                            n(d())
+                //    null != t && r.setRequestHeader(e, t)
+                //}
+                //)),
+                null != t.onProgress && (r.onprogress = t.onProgress),
+                r.onreadystatechange = function() {
+                    if (0 !== r.readyState) {
+                        if (4 === r.readyState) {
+                            if (null == r.status)
+                                return void n(new Error("fetch error: no status"));
+                            if (0 === r.status || r.status >= 12e3)
+                                return void n(new Error("fetch error: unexpected status ".concat(r.status)));
+                            a(h())
                         }
                     } else
-                        r(new Error("fetch error: not sent"))
+                        n(new Error("fetch error: not sent"))
                 }
                 ,
-                s.onerror = function() {
-                    return r(new Error("fetch error: error"))
+                r.onerror = function() {
+                    return n(new Error("fetch error: error"))
                 }
                 ,
-                s.ontimeout = function() {
-                    r(new o.HttpTimedOutError("fetch error: timedout",{
+                r.ontimeout = function() {
+                    n(new s.HttpTimedOutError("fetch error: timedout",{
                         url: e.toString()
                     }))
                 }
                 ,
-                s.withCredentials = "include" === t.credentials,
-                null != t.timeout && (s.timeout = t.timeout),
-                s.open(t.method || "get", e.toString(), !0),
-                s.responseType = "arraybuffer",
-                s.send(t.body || null)
+                r.withCredentials = "include" === t.credentials,
+                null != t.timeout && (r.timeout = t.timeout),
+                r.open(t.method || "get", e.toString(), !0),
+                r.responseType = "arraybuffer",
+                r.send(t.body || null)
             }
-            function d() {
-                var e = new u.default((0,
-                l.default)(s.getAllResponseHeaders()));
+            function h() {
+                var e = new c.default((0,
+                l.default)(r.getAllResponseHeaders()));
                 return {
-                    ok: 200 <= s.status && s.status < 300,
-                    statusText: s.statusText,
-                    status: s.status,
-                    url: s.responseURL,
+                    ok: 200 <= r.status && r.status < 300,
+                    statusText: r.statusText,
+                    status: r.status,
+                    url: r.responseURL,
                     text: function() {
                         return p()
                     },
                     json: function() {
-                        return p().then(function(e) {
+                        return p().then((function(e) {
                             return JSON.parse(e)
-                        })
+                        }
+                        ))
                     },
                     arrayBuffer: function() {
-                        return s.response
+                        return r.response
                     },
                     blob: function() {
-                        return Promise.resolve(new Blob([s.response],{
+                        return Promise.resolve(new Blob([r.response],{
                             type: e.get("content-type") || ""
                         }))
                     },
-                    clone: d,
+                    clone: h,
                     headers: e
                 }
             }
             function p() {
-                return Promise.resolve(String.fromCharCode.apply(String, function(e) {
-                    if (Array.isArray(e)) {
-                        for (var t = 0, n = Array(e.length); t < e.length; t++)
-                            n[t] = e[t];
-                        return n
-                    }
-                    return Array.from(e)
-                }(new Uint8Array(s.response))))
+                return Promise.resolve(String.fromCharCode.apply(String, (0,
+                i.default)(new Uint8Array(r.response))))
             }
         }
-        )
+        ))
     }
-}}
+}
