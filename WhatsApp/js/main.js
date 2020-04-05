@@ -3,10 +3,10 @@
 var currentView = Windows.UI.Core.SystemNavigationManager.getForCurrentView();
 var appViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility;
 
-var gutter = 'document.getElementsByClassName("_1-iDe _1xXdX")[1].style.display = ';
-var conversation = 'document.getElementsByClassName("_1-iDe Wu52Z")[1].style.display = ';
-var show = '"block";';
-var hide = '"none";';
+var gutter = "var gutter = document.getElementsByClassName('_1-iDe _1xXdX'); gutter.length > 0 && (gutter[1].style.display = ";
+var conversation = "var conversation = document.getElementsByClassName('_1-iDe Wu52Z'); conversation.length > 0 && (conversation[1].style.display = ";
+var show = "'block');";
+var hide = "'none');";
 
 var webpackFunctions = '';
 Windows.Storage.StorageFile.getFileFromApplicationUriAsync(Windows.Foundation.Uri('ms-appx:///js/webpack_functions.js'))
