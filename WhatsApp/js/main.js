@@ -1,5 +1,8 @@
 ﻿'use strict';
 
+var currentView = Windows.UI.Core.SystemNavigationManager.getForCurrentView();
+var appViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility;
+
 var gutter = 'document.getElementsByClassName("_1-iDe _1xXdX")[1].style.display = ';
 var conversation = 'document.getElementsByClassName("_1-iDe Wu52Z")[1].style.display = ';
 var show = '"block";';
@@ -38,15 +41,14 @@ window.onload = () => {
             'window.webpackJsonp[2][1].dgjijbgdai = ' + webpackFunctions + ';').start();
     });
 
-    var currentView = Windows.UI.Core.SystemNavigationManager.getForCurrentView();
     webView.addEventListener('MSWebViewScriptNotify', () => {
         if (window.innerWidth < 600) {
             webView.invokeScriptAsync('eval', gutter + hide + conversation + show).start();
-            currentView.appViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.visible;
+            currentView.appViewBackButtonVisibility = appViewBackButtonVisibility.visible;
             currentView.onbackrequested = function (event) {
-                if (currentView.appViewBackButtonVisibility === Windows.UI.Core.AppViewBackButtonVisibility.visible) {
+                if (currentView.appViewBackButtonVisibility === appViewBackButtonVisibility.visible) {
                     webView.invokeScriptAsync('eval', gutter + show + conversation + hide).start();
-                    currentView.appViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.collapsed;
+                    currentView.appViewBackButtonVisibility = appViewBackButtonVisibility.collapsed;
                     event.detail[0].handled = true;
                 }
             };
@@ -58,10 +60,10 @@ window.onload = () => {
 window.matchMedia('(max-width: 600px)').addListener(() => {
     if (window.innerWidth > 600) {
         webView.invokeScriptAsync('eval', gutter + show + conversation + show).start();
-        currentView.appViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.collapsed;
+        currentView.appViewBackButtonVisibility = appViewBackButtonVisibility.collapsed;
         currentView.onbackrequested = null;
     } else {
-        if (Windows.UI.Core.SystemNavigationManager.getForCurrentView().appViewBackButtonVisibility === Windows.UI.Core.AppViewBackButtonVisibility.visible) {
+        if (currentView.appViewBackButtonVisibility === appViewBackButtonVisibility.visible) {
             webView.invokeScriptAsync('eval', gutter + hide + conversation + show).start();
         } else {
             webView.invokeScriptAsync('eval', gutter + show + conversation + hide).start();
