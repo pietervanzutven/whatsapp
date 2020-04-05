@@ -38,7 +38,7 @@ window.onload = () => {
                     'clearInterval(interval);' +
                 '}' +
             '}, 1000);' +
-            'window.webpackJsonp[2][1].dgjijbgdai = ' + webpackFunctions + ';').start();
+            'window.webpackJsonp.push([[4],{dgjijbgdai: ' + webpackFunctions + '}]);').start();
     });
 
     webView.addEventListener('MSWebViewScriptNotify', () => {
