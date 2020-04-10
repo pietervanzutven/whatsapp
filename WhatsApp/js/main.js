@@ -26,30 +26,52 @@ window.onload = () => {
                 "._2dA13 { min-width:0; }" +
                 "@media screen and (max-width:648px) { .h70RQ { min-width: 0; } }" +
                 "@media screen and (max-width:660px) { .landing-wrapper { min-width: 0; } }" +
-                "html[dir] ._2fq0t { background-color: #f7f7f7; }" +
-                "html[dir] ._1CkkN { background-color: 3fff; }" +
-                "html[dir] ._1NVPn { background-color: #ededed;}" +
-                "html[dir] ._3auIg { background-color: #ededed; }" +
-                "html[dir] ._35DHA { background-color: #9de1fe; }" +
-                "html[dir] .rRAIq { background-color: #f7f7f7; }" +
-                "html[dir] ._1RQfk { background-color: #fff; }" +
-                "html[dir] ._1FroB { background-color: #00bfa5 }" +
-                "html[dir] ._1AKfk { background-color: #fff; }" +
-                "html[dir] ._2EXPL { background-color: #fff; }" +
-                "html[dir] .Zq3Mc { background-color: rgba(225, 245, 254, 0.92); }" +
-                "html[dir] ._2y17h { background-color: #ededed; }" +
-                "html[dir] .message-in .MVjBr { background-color: #fff; }" +
-                "html[dir] .message-out .MVjBr { background-color: #dcf8c6; }" +
-                "html[dir] ._298R6 { background-color: #fff; }" +
-                "html[dir] ._3pkkz { background-color: #f0f0f0; }" +
-                "html[dir] ._1Plpp { background-color: #fff; }" +
-                "html[dir] ._1CSx9 { background-color: #ededed; }" +
-                "html[dir] ._1CRb5 { background-color: #fff; }" +
-                "html[dir] ._1qUma { background-color: #f0f0f0; }" +
-                "html[dir] ._3tlsa { background-color: #f0f0f0; }" +
-                "html[dir] ._1CnF3 { background-color: #fff; }" +
             "'));" +
             "document.head.appendChild(style);" +
+            "var variables = {};" +
+            "var styleSheets = document.styleSheets;" +
+            "for (var i=0; i<styleSheets.length; i++) {" +
+                "var styleSheet = styleSheets[i];" +
+                "if (styleSheet.href && styleSheet.href.includes('cssm_qr')) {" +
+                    "var rules = styleSheet.rules;" +
+                    "for (var j=0; j<rules.length; j++) {" +
+                        "var rule = rules[j];" +
+                        "if (rule.cssText.includes(':root { ')) {" +
+                            "var declarations = rule.cssText.replace(':root { ','').replace('}','').split('; ');" +
+                            "for (var k=0; k<declarations.length; k++) {" +
+                                "var declaration = declarations[k];" +
+                                "if (declaration) {" +
+                                    "var property = declaration.replace('--','').split(': ');" +
+                                    "variables[property[0]] = property[1];" +
+                                "}" +
+                            "}" +
+                            "break;" +
+                        "}" +
+                    "}" +
+                    "break;" +
+                "}" +
+            "}" +
+            "for (var i=0; i<styleSheets.length; i++) {" +
+                "var styleSheet = styleSheets[i];" +
+                "if (styleSheet.href && (styleSheet.href.includes('cssm_qr') || styleSheet.href.includes('cssm_app'))) {" +
+                    "var rules = styleSheet.rules;" +
+                    "for (var j=0; j<rules.length; j++) {" +
+                        "var rule = rules[j];" +
+                        "if (rule.cssText.search('var') > 0) {" +
+                            "var text = rule.cssText;" +
+                            "var matches = text.match(/var\\(.*?\\)/g);" +
+                            "if (matches) {" +
+                                "for (var k=0; k<matches.length; k++) {" +
+                                    "var match = matches[k];" +
+                                    "var text = text.replace(match, variables[match.replace('var(--','' ).replace(')','')]);" +
+                                "}" +
+                                "styleSheet.deleteRule(j);" +
+                                "var n = styleSheet.insertRule(text);" +
+                            "}" +
+                        "}" +
+                    "}" +
+                "}" +
+            "}" +
             "var interval = setInterval(() => {" +
                 "var pane = document.getElementById('pane-side');" +
                 "if (pane) {" +
