@@ -69,6 +69,7 @@
     <AppxBundlePlatforms>x86|x64|arm|arm64</AppxBundlePlatforms>
     <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
     <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
+    <PackageCertificateThumbprint>ACFCDC3CD53F4AF66DED58345E75D11A481C8206</PackageCertificateThumbprint>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="package.appxmanifest">
