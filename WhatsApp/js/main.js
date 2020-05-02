@@ -28,6 +28,7 @@ window.onload = () => {
                 "html[dir=ltr] .l92Uo { margin-left: 0px; margin-right: 0px }" +
                 "@media screen and (max-width:648px) { .h70RQ { min-width: 0; } }" +
                 "@media screen and (max-width:660px) { .landing-wrapper { min-width: 0; } }" +
+                "@media screen and (max-width:900px) { .two ._1xXdX { flex: 1 1 100%; } }" +
             "'));" +
             "document.head.appendChild(style);" +
             "var variables = {};" +
