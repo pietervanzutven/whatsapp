@@ -44,7 +44,7 @@ window.onload = () => {
                             "for (var k=0; k<declarations.length; k++) {" +
                                 "var declaration = declarations[k];" +
                                 "if (declaration) {" +
-                                    "var property = declaration.replace('--','').split(': ');" +
+                                    "var property = declaration.replace('--','').split(':');" +
                                     "variables[property[0]] = property[1];" +
                                 "}" +
                             "}" +
@@ -66,10 +66,10 @@ window.onload = () => {
                             "if (matches) {" +
                                 "for (var k=0; k<matches.length; k++) {" +
                                     "var match = matches[k];" +
-                                    "var text = text.replace(match, variables[match.replace('var(--','' ).replace(')','')]);" +
+                                    "var text = text.replace(match, variables[match.replace('var(--','').replace(')','')]);" +
                                 "}" +
                                 "styleSheet.deleteRule(j);" +
-                                "var n = styleSheet.insertRule(text);" +
+                                "styleSheet.insertRule(text);" +
                             "}" +
                         "}" +
                     "}" +
@@ -85,7 +85,7 @@ window.onload = () => {
                     "clearInterval(interval);" +
                 "}" +
             "}, 1000);" +
-            "window.webpackJsonp.push([[4],{dgjijbgdai: " + webpackFunctions + "}]);").start();
+            "window.webpackJsonp.push([[3],{dgjijbgdai: " + webpackFunctions + "}]);").start();
     });
 
     webView.addEventListener("MSWebViewScriptNotify", () => {
