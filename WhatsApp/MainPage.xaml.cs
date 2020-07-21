@@ -20,8 +20,6 @@ namespace WhatsApp
         private String show = "'block');";
         private String hide = "'none');";
 
-        private String webpackFunctions = "";
-
         public MainPage()
         {
             this.InitializeComponent();
@@ -30,14 +28,11 @@ namespace WhatsApp
             HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, new Uri("https://web.whatsapp.com/"));
             httpRequestMessage.Headers.Add("User-Agent", userAgent);
             webView.NavigateWithHttpRequestMessage(httpRequestMessage);
-
-            LoadWebPackFunctions();
         }
 
-        private async void LoadWebPackFunctions()
+        private void WebView_ContentLoading(WebView sender, WebViewContentLoadingEventArgs args)
         {
-            StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///js/webpack_functions.js"));
-            webpackFunctions = await FileIO.ReadTextAsync(file);
+            _ = webView.InvokeScriptAsync("eval", new string[] { "delete window.Headers;" });
         }
 
         private void WebView_LoadCompleted(object sender, NavigationEventArgs e)
@@ -105,8 +100,7 @@ namespace WhatsApp
                         "}" +
                         "clearInterval(interval);" +
                     "}" +
-                "}, 1000);" +
-                "window.webpackJsonp.push([[3],{dgjijbgdai: " + webpackFunctions + "}]);"});
+                "}, 1000);" });
         }
 
         private void WebView_ScriptNotify(object sender, NotifyEventArgs e)

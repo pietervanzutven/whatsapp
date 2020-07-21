@@ -9,7 +9,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <WebView x:Name="webView" LoadCompleted="WebView_LoadCompleted" ScriptNotify="WebView_ScriptNotify" SizeChanged="WebView_SizeChanged" />
+        <WebView x:Name="webView" LoadCompleted="WebView_LoadCompleted" ScriptNotify="WebView_ScriptNotify" SizeChanged="WebView_SizeChanged" ContentLoading="WebView_ContentLoading" />
 
     </Grid>
 </Page>
