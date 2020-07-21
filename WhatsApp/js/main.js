@@ -8,16 +8,8 @@ var conversation = "var conversation = document.getElementsByClassName('_1-iDe W
 var show = "'block');";
 var hide = "'none');";
 
-var webpackFunctions = "";
-Windows.Storage.StorageFile.getFileFromApplicationUriAsync(Windows.Foundation.Uri("ms-appx:///js/webpack_functions.js"))
-    .then(file => Windows.Storage.FileIO.readTextAsync(file)
-    .then(text => webpackFunctions = text));
-
 window.onload = () => {
-    var userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.45 Safari/537.36 Edg/79.0.309.30";
-    var httpRequestMessage = new Windows.Web.Http.HttpRequestMessage(Windows.Web.Http.HttpMethod.get, new Windows.Foundation.Uri("https://web.whatsapp.com/"));
-    httpRequestMessage.headers.append("User-Agent", userAgent);
-    webView.navigateWithHttpRequestMessage(httpRequestMessage);
+    webView.addEventListener("MSWebViewContentLoading", () => webView.invokeScriptAsync("eval", "delete window.Headers;").start());
 
     webView.addEventListener("MSWebViewNavigationCompleted", () => {
         webView.invokeScriptAsync("eval",
@@ -83,8 +75,7 @@ window.onload = () => {
                     "}" +
                     "clearInterval(interval);" +
                 "}" +
-            "}, 1000);" +
-            "window.webpackJsonp.push([[3],{dgjijbgdai: " + webpackFunctions + "}]);").start();
+            "}, 1000);").start();
     });
 
     webView.addEventListener("MSWebViewScriptNotify", () => {
@@ -101,6 +92,10 @@ window.onload = () => {
         }
     });
 
+    var userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.45 Safari/537.36 Edg/79.0.309.30";
+    var httpRequestMessage = new Windows.Web.Http.HttpRequestMessage(Windows.Web.Http.HttpMethod.get, new Windows.Foundation.Uri("https://web.whatsapp.com/"));
+    httpRequestMessage.headers.append("User-Agent", userAgent);
+    webView.navigateWithHttpRequestMessage(httpRequestMessage);
 }
 
 window.matchMedia("(max-width: 600px)").addListener(() => {

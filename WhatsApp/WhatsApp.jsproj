@@ -127,7 +127,6 @@
     <Content Include="Assets\Square44x44Logo.scale-200.png" />
     <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
-    <Content Include="js\webpack_functions.js" />
     <Content Include="js\main.js" />
     <None Include="WhatsApp_TemporaryKey.pfx" />
   </ItemGroup>
