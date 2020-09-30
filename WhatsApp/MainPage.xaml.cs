@@ -38,12 +38,8 @@ namespace WhatsApp
 
         private void WebView_LoadCompleted(object sender, NavigationEventArgs e)
         {
-            var systemTheme = "light";
-            var uisettings = new UISettings();
-            var background = uisettings.GetColorValue(UIColorType.Background);
-            if (background.R == 0) {
-                systemTheme = "dark";
-            }
+            var background = new UISettings().GetColorValue(UIColorType.Background);
+            var systemTheme = background.R == 255 ? "light" : "dark";
             _ = webView.InvokeScriptAsync("eval", new string[] {
                 "var style = document.createElement('style');" +
                 "style.appendChild(document.createTextNode('" +
