@@ -1,6 +1,7 @@
 ﻿using System;
 using Windows.Storage;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -37,6 +38,12 @@ namespace WhatsApp
 
         private void WebView_LoadCompleted(object sender, NavigationEventArgs e)
         {
+            var systemTheme = "light";
+            var uisettings = new UISettings();
+            var background = uisettings.GetColorValue(UIColorType.Background);
+            if (background.R == 0) {
+                systemTheme = "dark";
+            }
             _ = webView.InvokeScriptAsync("eval", new string[] {
                 "var style = document.createElement('style');" +
                 "style.appendChild(document.createTextNode('" +
@@ -47,6 +54,11 @@ namespace WhatsApp
                     "@media screen and (max-width:600px) { ._1-iDe {position: absolute; width: 100%; } }" +
                 "'));" +
                 "document.head.appendChild(style);" +
+                "var systemTheme = window.localStorage.getItem('system-theme-mode');" +
+                "var theme = systemTheme === 'true' ? '\"" + systemTheme + "\"' : window.localStorage.getItem('theme');" +
+                "if (theme === '\"dark\"') {" +
+                    "document.body.classList.add('dark');" +
+                "}" +
                 "var variables = {};" +
                 "var styleSheets = document.styleSheets;" +
                 "for (var i=0; i<styleSheets.length; i++) {" +
@@ -55,8 +67,8 @@ namespace WhatsApp
                         "var rules = styleSheet.rules;" +
                         "for (var j=0; j<rules.length; j++) {" +
                             "var rule = rules[j];" +
-                            "if (rule.cssText.includes(':root { ')) {" +
-                                "var declarations = rule.cssText.replace(':root { ','').replace('}','').split('; ');" +
+                            "if ((theme === '\"light\"' && rule.cssText.startsWith(':root { ')) || (theme === '\"dark\"' && rule.cssText.startsWith('.dark { '))) {" +
+                                "var declarations = rule.cssText.replace(':root { ','').replace('.dark { ','').replace('}','').split('; ');" +
                                 "for (var k=0; k<declarations.length; k++) {" +
                                     "var declaration = declarations[k];" +
                                     "if (declaration) {" +
