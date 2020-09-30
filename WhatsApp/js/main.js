@@ -14,11 +14,7 @@ window.onload = () => {
 
     webView.addEventListener("MSWebViewNavigationCompleted", () => {
         var background = viewManagement.UISettings().getColorValue(viewManagement.UIColorType.background);
-        if (background.r === 255) {
-            var systemTheme = "light";
-        } else {
-            var systemTheme = "dark";
-        }
+        var systemTheme = background.r === 255 ? "light" : "dark";
         webView.invokeScriptAsync("eval",
             "var style = document.createElement('style');" +
             "style.appendChild(document.createTextNode('" +
