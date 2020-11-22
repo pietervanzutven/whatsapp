@@ -16,8 +16,8 @@ namespace WhatsApp
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private String gutter = "var gutter = document.getElementsByClassName('_1-iDe _1xXdX'); gutter.length > 0 && (gutter[1].style.display = ";
-        private String conversation = "var conversation = document.getElementsByClassName('_1-iDe Wu52Z'); conversation.length > 0 && (conversation[1].style.display = ";
+        private String gutter = "var gutter = document.getElementsByClassName('i5ly3 _2NwAr'); gutter.length > 0 && (gutter[1].style.display = ";
+        private String conversation = "var conversation = document.getElementsByClassName('i5ly3 _2l_Ww'); conversation.length > 0 && (conversation[1].style.display = ";
         private String show = "'block');";
         private String hide = "'none');";
 
@@ -43,11 +43,11 @@ namespace WhatsApp
             _ = webView.InvokeScriptAsync("eval", new string[] {
                 "var style = document.createElement('style');" +
                 "style.appendChild(document.createTextNode('" +
-                    "._2Oo_9 { min-width: 0px; }" +
-                    "html[dir=ltr] ._1iJWV { margin-left: 0px; margin-right: 0px }" +
-                    "@media screen and (max-width:648px) { .h70RQ { min-width: 0; } }" +
+                    ".sWE2H { min-width: 0px; }" +
+                    "@media screen and (max-width:648px) { ._36Q2N { min-width: 0; } }" +
                     "@media screen and (max-width:660px) { .landing-wrapper { min-width: 0; } }" +
-                    "@media screen and (max-width:600px) { ._1-iDe {position: absolute; width: 100%; } }" +
+                    "@media screen and (max-width:900px) { .three ._299go { width: 100%; } }" +
+                    "@media screen and (max-width:900px) { .two ._2l_Ww { display: none; } }" +
                 "'));" +
                 "document.head.appendChild(style);" +
                 "var systemTheme = window.localStorage.getItem('system-theme-mode');" +
