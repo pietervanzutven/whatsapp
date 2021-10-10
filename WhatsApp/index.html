@@ -3,15 +3,97 @@
 <head>
     <meta charset="utf-8" />
     <title>WhatsApp</title>
-    <style>
-        .webView {
-            width: 100%;
-            height: 100%;
-        }
-    </style>
+
+    <script src="js/require.js"></script>
+
+    <script src="js/node_modules/@adiwajshing/baileys/lib/index.js"></script>
+    <script src="js/node_modules/@adiwajshing/baileys/lib/Binary/Constants.js"></script>
+    <script src="js/node_modules/@adiwajshing/baileys/lib/Binary/Decoder.js"></script>
+    <script src="js/node_modules/@adiwajshing/baileys/lib/Binary/Encoder.js"></script>
+    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/0.Base.js"></script>
+    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/1.Validation.js"></script>
+    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/3.Connect.js"></script>
+    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/4.Events.js"></script>
+    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/5.User.js"></script>
+    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/6.MessagesSend.js"></script>
+    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/7.MessagesExtra.js"></script>
+    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/8.Groups.js"></script>
+    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/Constants.js"></script>
+    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/index.js"></script>
+    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/Mutex.js"></script>
+    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/Utils.js"></script>
+    <script src="js/node_modules/@adiwajshing/baileys/WAMessage/WAMessage.js"></script>
+
+    <script src="js/node_modules/@adiwajshing/keyed-db/lib/BinarySearch.js"></script>
+    <script src="js/node_modules/@adiwajshing/keyed-db/lib/KeyedDB.js"></script>
+
+    <script src="js/node_modules/@protobufjs/aspromise/index.js"></script>
+    <script src="js/node_modules/@protobufjs/base64/index.js"></script>
+    <script src="js/node_modules/@protobufjs/eventemitter/index.js"></script>
+    <script src="js/node_modules/@protobufjs/float/index.js"></script>
+    <script src="js/node_modules/@protobufjs/inquire/index.js"></script>
+    <script src="js/node_modules/@protobufjs/pool/index.js"></script>
+    <script src="js/node_modules/@protobufjs/utf8/index.js"></script>
+
+    <script src="js/node_modules/base64-js/index.js"></script>
+
+    <script src="js/node_modules/buffer/index.js"></script>
+
+    <script src="js/node_modules/crypto-browserify/index.js"></script>
+    <script src="js/node_modules/crypto/index.js"></script>
+
+    <script src="js/node_modules/curve25519-js/lib/index.js"></script>
+
+    <script src="js/node_modules/events/index.js"></script>
+
+    <script src="js/node_modules/futoin-hkdf/hkdf.js"></script>
+
+    <script src="js/node_modules/http-browserify/index.js"></script>
+    <script src="js/node_modules/http/index.js"></script>
+
+    <script src="js/node_modules/ieee754/index.js"></script>
+
+    <script src="js/node_modules/long/index.js"></script>
+    <script src="js/node_modules/long/src/long.js"></script>
+
+    <script src="js/node_modules/os-browserify/index.js"></script>
+    <script src="js/node_modules/os/index.js"></script>
+
+    <script src="js/node_modules/path-browserify/index.js"></script>
+    <script src="js/node_modules/path/index.js"></script>
+
+    <script src="js/node_modules/protobufjs/minimal.js"></script>
+    <script src="js/node_modules/protobufjs/src/index-minimal.js"></script>
+    <script src="js/node_modules/protobufjs/src/reader.js"></script>
+    <script src="js/node_modules/protobufjs/src/reader_buffer.js"></script>
+    <script src="js/node_modules/protobufjs/src/roots.js"></script>
+    <script src="js/node_modules/protobufjs/src/rpc.js"></script>
+    <script src="js/node_modules/protobufjs/src/rpc/service.js"></script>
+    <script src="js/node_modules/protobufjs/src/util/longbits.js"></script>
+    <script src="js/node_modules/protobufjs/src/util/minimal.js"></script>
+    <script src="js/node_modules/protobufjs/src/writer.js"></script>
+    <script src="js/node_modules/protobufjs/src/writer_buffer.js"></script>
+
+    <script src="js/node_modules/qrcode-terminal/lib/main.js"></script>
+    <script src="js/node_modules/qrcode-terminal/vendor/QRCode/index.js"></script>
+    <script src="js/node_modules/qrcode-terminal/vendor/QRCode/QR8bitByte.js"></script>
+    <script src="js/node_modules/qrcode-terminal/vendor/QRCode/QRBitBuffer.js"></script>
+    <script src="js/node_modules/qrcode-terminal/vendor/QRCode/QRErrorCorrectLevel.js"></script>
+    <script src="js/node_modules/qrcode-terminal/vendor/QRCode/QRMaskPattern.js"></script>
+    <script src="js/node_modules/qrcode-terminal/vendor/QRCode/QRMath.js"></script>
+    <script src="js/node_modules/qrcode-terminal/vendor/QRCode/QRMode.js"></script>
+    <script src="js/node_modules/qrcode-terminal/vendor/QRCode/QRPolynomial.js"></script>
+    <script src="js/node_modules/qrcode-terminal/vendor/QRCode/QRRSBlock.js"></script>
+    <script src="js/node_modules/qrcode-terminal/vendor/QRCode/QRUtil.js"></script>
+
+    <script src="js/node_modules/stream-browserify/index.js"></script>
+    <script src="js/node_modules/stream/index.js"></script>
+
+    <script src="js/node_modules/ws/index.js"></script>
+
+    <script src="js/main.js"></script>
 </head>
 <body>
-    <script src="js/main.js"></script>
-    <x-ms-webview id="webView" class="webView"></x-ms-webview>
+    <div id="qr" style="white-space: pre; font-family: monospace"></div>
 </body>
 </html>
