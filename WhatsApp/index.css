@@ -1,0 +1,44 @@
+﻿#qr {
+    white-space: pre;
+    font-family: monospace;
+    text-align: center;
+}
+
+#contacts {
+    overflow-y: scroll;
+    white-space: pre;
+}
+
+#conversation {
+    overflow-y: scroll;
+    white-space: pre;
+}
+
+.message {
+    width: 60%;
+    white-space: normal;
+    margin: 5px 20px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.fill {
+    width: 100%;
+    height: 100%;
+}
+
+.hidden {
+    display: none;
+}
+
+.left {
+    background-color: lightblue;
+    float: left;
+    text-align: left;
+}
+
+.right {
+    background-color: lightgreen;
+    float: right;
+    text-align: right;
+}
