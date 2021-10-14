@@ -43,11 +43,22 @@ async function connectToWhatsApp(conn) {
     }
 }
 
-function openConversation(jid) {
+async function openConversation(jid) {
     contacts.classList.add("hidden");
-    conversation.classList.remove("hidden");
 
-    const envelopes = conn.chats.dict[jid].messages.array;
+    Windows.UI.Core.SystemNavigationManager.getForCurrentView().appViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.visible;
+    Windows.UI.Core.SystemNavigationManager.getForCurrentView().onbackrequested = event => {
+        event.handled = true;
+        conversation.classList.add("hidden");
+        contacts.classList.remove("hidden");
+        Windows.UI.Core.SystemNavigationManager.getForCurrentView().appViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.collapsed;
+    }
+
+    let envelopes = conn.chats.dict[jid].messages.array;
+    if (envelopes.length < 2) {
+        envelopes = (await conn.loadMessages(jid, 20)).messages;
+    }
+
     conversation.innerHTML = "";
     envelopes.forEach(envelope => {
         const message = envelope.message;
@@ -66,13 +77,7 @@ function openConversation(jid) {
         }
     });
 
-    Windows.UI.Core.SystemNavigationManager.getForCurrentView().appViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.visible;
-    Windows.UI.Core.SystemNavigationManager.getForCurrentView().onbackrequested = event => {
-        event.handled = true;
-        conversation.classList.add("hidden");
-        contacts.classList.remove("hidden");
-        Windows.UI.Core.SystemNavigationManager.getForCurrentView().appViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.collapsed;
-    }
+    conversation.classList.remove("hidden");
 }
 
 let conn;
