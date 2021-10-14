@@ -19,13 +19,13 @@ async function connectToWhatsApp(conn) {
         Windows.Storage.ApplicationData.current.localSettings.values["authInfo"] = JSON.stringify(authInfo);
     });
 
-    conn.on("contacts-received", () => {
+    conn.on("chats-received", () => {
         conn.chats.array.forEach(chat => {
-            const link = document.createElement("a");
-            link.addEventListener("click", () => openConversation(chat.jid));
-            link.href = "#";
-            link.innerHTML = chat.name + "\n";
-            contacts.appendChild(link);
+            const div = document.createElement("div");
+            div.addEventListener("click", () => openConversation(chat.jid));
+            div.innerHTML = chat.name;
+            div.classList.add("contact");
+            contacts.appendChild(div);
         });
         contacts.classList.remove("hidden");
         qr.classList.add("hidden");

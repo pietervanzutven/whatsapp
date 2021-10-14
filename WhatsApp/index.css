@@ -14,6 +14,12 @@
     white-space: pre;
 }
 
+.contact {
+    margin: 5px 20px;
+    padding: 10px;
+    border-bottom: solid 1px lightgrey;
+}
+
 .message {
     width: 60%;
     white-space: normal;
