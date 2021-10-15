@@ -63,17 +63,26 @@ async function openConversation(jid) {
     envelopes.forEach(envelope => {
         const message = envelope.message;
         if (message) {
-            if (message.conversation) {
-                const div = document.createElement("div");
-                div.innerHTML = message.conversation;
-                div.classList.add("message");
-                if (envelope.key.fromMe) {
-                    div.classList.add("right");
-                } else {
-                    div.classList.add("left");
-                }
-                conversation.appendChild(div);
+            const div = document.createElement("div");
+            if (envelope.key.fromMe) {
+                div.classList.add("right");
+            } else {
+                div.classList.add("left");
             }
+            if (message.conversation) {
+                div.innerHTML += message.conversation;
+            } else if (message.extendedTextMessage) {
+                div.innerHTML += message.extendedTextMessage.text;
+            } else if (message.contactMessage) {
+                div.innerHTML += message.contactMessage.displayName + ": " + message.contactMessage.vcard;
+            } else if (message.imageMessage || message.audioMessage || message.documentMessage) {
+                div.innerHTML += "Attachment";
+                div.innerHTML += message.imageMessage ? "\n" + message.imageMessage.caption : "";
+            } else {
+                div.innerHTML += "Unkown message type!"
+            }
+            div.classList.add("message");
+            conversation.appendChild(div);
         }
     });
 
