@@ -87,6 +87,7 @@ async function openConversation(jid) {
             } else {
                 div.innerHTML += "Unkown message type!"
             }
+            div.innerHTML += "\n<i>" + (new Date(envelope.messageTimestamp.low*1000)).toLocaleString() + "</i";
             div.classList.add("message");
             conversation.appendChild(div);
         }
