@@ -22,7 +22,7 @@
 
 .message {
     width: 60%;
-    white-space: normal;
+    white-space: pre-line;
     margin: 5px 20px;
     padding: 10px;
     border-radius: 10px;

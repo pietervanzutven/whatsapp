@@ -66,8 +66,14 @@ async function openConversation(jid) {
             const div = document.createElement("div");
             if (envelope.key.fromMe) {
                 div.classList.add("right");
+                div.innerHTML = "<b>" + conn.user.name + "</b>\n";
             } else {
                 div.classList.add("left");
+                if (envelope.key.participant) {
+                    div.innerHTML = "<b>" + conn.contacts[envelope.key.participant].name + "</b>\n";
+                } else {
+                    div.innerHTML = "<b>" + conn.contacts[envelope.key.remoteJid].name + "</b>\n";
+                }
             }
             if (message.conversation) {
                 div.innerHTML += message.conversation;
