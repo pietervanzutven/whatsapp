@@ -19,7 +19,7 @@ async function connectToWhatsApp(conn) {
         Windows.Storage.ApplicationData.current.localSettings.values["authInfo"] = JSON.stringify(authInfo);
     });
 
-    conn.on("chats-received", () => {
+    conn.on("contacts-received", () => {
         conn.chats.array.forEach(chat => {
             const div = document.createElement("div");
             div.addEventListener("click", () => openConversation(chat.jid));
