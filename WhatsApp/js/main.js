@@ -54,12 +54,15 @@ async function openConversation(jid) {
         Windows.UI.Core.SystemNavigationManager.getForCurrentView().appViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.collapsed;
     }
 
-    let envelopes = conn.chats.dict[jid].messages.array;
+    const chat = conn.chats.dict[jid];
+    title.innerHTML = chat.name;
+
+    let envelopes = chat.messages.array;
     if (envelopes.length < 2) {
         envelopes = (await conn.loadMessages(jid, 20)).messages;
     }
 
-    conversation.innerHTML = "";
+    messages.innerHTML = "";
     envelopes.forEach(envelope => {
         const message = envelope.message;
         if (message) {
@@ -89,7 +92,7 @@ async function openConversation(jid) {
             }
             div.innerHTML += "\n<i>" + (new Date(envelope.messageTimestamp.low*1000)).toLocaleString() + "</i";
             div.classList.add("message");
-            conversation.appendChild(div);
+            messages.appendChild(div);
         }
     });
 
@@ -97,8 +100,11 @@ async function openConversation(jid) {
 }
 
 let conn;
+let title, messages;
 window.onload = () => {
     conn = new WAConnection();
-
     connectToWhatsApp(conn);
+
+    title = document.getElementById("title");
+    messages = document.getElementById("messages");
 }
