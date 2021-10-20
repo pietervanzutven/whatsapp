@@ -1,6 +1,6 @@
 ﻿"use strict";
 
-const { WAConnection } = require('@adiwajshing/baileys/lib');
+const { MessageType, WAConnection } = require('@adiwajshing/baileys/lib');
 const QR = require("qrcode-terminal/lib/main");
 window.Buffer = require('buffer').Buffer;
 
@@ -56,6 +56,7 @@ async function openConversation(jid) {
 
     const chat = conn.chats.dict[jid];
     title.innerHTML = chat.name;
+    address.value = jid;
 
     let envelopes = chat.messages.array;
     if (envelopes.length < 2) {
@@ -99,12 +100,22 @@ async function openConversation(jid) {
     conversation.classList.remove("hidden");
 }
 
+async function sendMessage() {
+    await conn.sendMessage(address.value, letter.value, MessageType.text);
+    letter.value = "";
+}
+
 let conn;
-let title, messages;
+let title, messages, letter, address, send;
 window.onload = () => {
     conn = new WAConnection();
     connectToWhatsApp(conn);
 
     title = document.getElementById("title");
     messages = document.getElementById("messages");
+    letter = document.getElementById("letter");
+    address = document.getElementById("address");
+    send = document.getElementById("send");
+
+    send.addEventListener("click", sendMessage);
 }
