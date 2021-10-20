@@ -52,6 +52,7 @@ async function openConversation(jid) {
         conversation.classList.add("hidden");
         contacts.classList.remove("hidden");
         Windows.UI.Core.SystemNavigationManager.getForCurrentView().appViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.collapsed;
+        Windows.UI.Core.SystemNavigationManager.getForCurrentView().onbackrequested = "";
     }
 
     const chat = conn.chats.dict[jid];
