@@ -1,6 +1,7 @@
 ﻿#qr {
     white-space: pre;
-    font-family: monospace;
+    font-family: "Courier New";
+    font-size: 2vw;
     text-align: center;
 }
 
