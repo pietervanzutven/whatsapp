@@ -5,7 +5,7 @@ const QR = require("qrcode-terminal/lib/main");
 window.Buffer = require('buffer').Buffer;
 
 async function connectToWhatsApp(conn) {
-    const authInfo = JSON.parse(Windows.Storage.ApplicationData.current.localSettings.values["authInfo"]);
+    const authInfo = Windows.Storage.ApplicationData.current.localSettings.values["authInfo"];
 
     conn.on("qr", qr => {
         QR.generate(qr, { small: true }, function (qrcode) {
@@ -32,7 +32,7 @@ async function connectToWhatsApp(conn) {
     });
 
     if (authInfo) {
-        conn.loadAuthInfo(authInfo);
+        conn.loadAuthInfo(JSON.parse(authInfo));
     }
 
     try {
