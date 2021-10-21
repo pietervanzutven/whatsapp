@@ -100,6 +100,7 @@ async function openConversation(jid) {
     });
 
     conversation.classList.remove("hidden");
+    messages.scrollTop = messages.scrollHeight
 }
 
 async function sendMessage() {
