@@ -161,6 +161,7 @@
     <Content Include="js\node_modules\crypto\index.js" />
     <Content Include="js\node_modules\curve25519-js\lib\index.js" />
     <Content Include="js\node_modules\events\index.js" />
+    <Content Include="js\node_modules\finally-polyfill\index.js" />
     <Content Include="js\node_modules\futoin-hkdf\hkdf.js" />
     <Content Include="js\node_modules\http-browserify\index.js" />
     <Content Include="js\node_modules\http\index.js" />

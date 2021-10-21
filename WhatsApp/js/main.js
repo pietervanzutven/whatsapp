@@ -1,8 +1,9 @@
 ﻿"use strict";
 
-const { MessageType, WAConnection } = require('@adiwajshing/baileys/lib');
+require("finally-polyfill");
+const { MessageType, WAConnection } = require("@adiwajshing/baileys/lib");
 const QR = require("qrcode-terminal/lib/main");
-window.Buffer = require('buffer').Buffer;
+window.Buffer = require("buffer").Buffer;
 
 async function connectToWhatsApp(conn) {
     const authInfo = Windows.Storage.ApplicationData.current.localSettings.values["authInfo"];
