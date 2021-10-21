@@ -88,8 +88,14 @@ async function openConversation(jid) {
             } else if (message.contactMessage) {
                 div.innerHTML += message.contactMessage.displayName + ": " + message.contactMessage.vcard;
             } else if (message.imageMessage || message.audioMessage || message.documentMessage) {
-                div.innerHTML += "Attachment";
-                div.innerHTML += message.imageMessage ? "\n" + message.imageMessage.caption : "";
+                if (message.imageMessage) {
+                    const img = document.createElement("img");
+                    img.src = URL.createObjectURL(new Blob([message.imageMessage.jpegThumbnail], { type: 'image/png' }));
+                    div.appendChild(img);
+                    div.innerHTML += message.imageMessage.caption ? "\n" + message.imageMessage.caption : "";
+                } else {
+                    div.innerHTML += "Attachment";
+                }
             } else {
                 div.innerHTML += "Unkown message type!"
             }
