@@ -13,6 +13,8 @@ async function connectToWhatsApp(conn) {
             const div = document.getElementById("qr");
             div.innerHTML = qrcode;
         });
+        pair.classList.remove("hidden");
+        directory.classList.add("hidden");
     });
 
     conn.on("close", () => {
@@ -39,7 +41,7 @@ async function connectToWhatsApp(conn) {
             contacts.appendChild(div);
         });
         directory.classList.remove("hidden");
-        qr.classList.add("hidden");
+        pair.classList.add("hidden");
     });
 
     if (authInfo) {
@@ -125,11 +127,14 @@ async function sendMessage() {
 }
 
 let conn;
+let pair;
 let directory, sender, status, contacts;
 let conversation, addressee, messages, letter, address, send;
 window.onload = () => {
     conn = new WAConnection();
     
+    pair = document.getElementById("pair");
+
     directory = document.getElementById("directory");
     sender = document.getElementById("sender");
     status = document.getElementById("status");
