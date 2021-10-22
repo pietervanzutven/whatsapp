@@ -15,7 +15,16 @@ async function connectToWhatsApp(conn) {
         });
     });
 
+    conn.on("close", () => {
+        status.className = "red";
+    });
+
+    conn.on("connecting", () => {
+        status.className = "orange";
+    });
+
     conn.on("open", () => {
+        status.className = "green";
         const authInfo = conn.base64EncodedAuthInfo();
         Windows.Storage.ApplicationData.current.localSettings.values["authInfo"] = JSON.stringify(authInfo);
     });
@@ -116,14 +125,14 @@ async function sendMessage() {
 }
 
 let conn;
-let directory, sender, contacts;
+let directory, sender, status, contacts;
 let conversation, addressee, messages, letter, address, send;
 window.onload = () => {
     conn = new WAConnection();
-    connectToWhatsApp(conn);
-
+    
     directory = document.getElementById("directory");
     sender = document.getElementById("sender");
+    status = document.getElementById("status");
     contacts = document.getElementById("contacts");
 
     conversation = document.getElementById("conversation");
@@ -132,6 +141,8 @@ window.onload = () => {
     letter = document.getElementById("letter");
     address = document.getElementById("address");
     send = document.getElementById("send");
+
+    connectToWhatsApp(conn);
 
     send.addEventListener("click", sendMessage);
 }

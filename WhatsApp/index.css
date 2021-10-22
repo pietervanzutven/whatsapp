@@ -28,6 +28,30 @@
     margin: 10px 20px;
 }
 
+#sender {
+    float: left;
+}
+
+#status {
+    width: 20px;
+    height: 20px;
+    float: right;
+    border-radius: 10px;
+    margin-top: 5px;
+}
+
+.red {
+    background-color: #ef476f;
+}
+
+.orange {
+    background-color: #ffd166;
+}
+
+.green {
+    background-color: #06d6a0;
+}
+
 #contacts {
     height: calc(100% - 50px);
     overflow-y: scroll;
