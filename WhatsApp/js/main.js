@@ -21,6 +21,7 @@ async function connectToWhatsApp(conn) {
     });
 
     conn.on("contacts-received", () => {
+        sender.innerHTML = conn.user.name;
         conn.chats.array.forEach(chat => {
             const div = document.createElement("div");
             div.addEventListener("click", () => openConversation(chat.jid));
@@ -28,7 +29,7 @@ async function connectToWhatsApp(conn) {
             div.classList.add("contact");
             contacts.appendChild(div);
         });
-        contacts.classList.remove("hidden");
+        directory.classList.remove("hidden");
         qr.classList.add("hidden");
     });
 
@@ -45,19 +46,19 @@ async function connectToWhatsApp(conn) {
 }
 
 async function openConversation(jid) {
-    contacts.classList.add("hidden");
+    directory.classList.add("hidden");
 
     Windows.UI.Core.SystemNavigationManager.getForCurrentView().appViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.visible;
     Windows.UI.Core.SystemNavigationManager.getForCurrentView().onbackrequested = event => {
         event.handled = true;
         conversation.classList.add("hidden");
-        contacts.classList.remove("hidden");
+        directory.classList.remove("hidden");
         Windows.UI.Core.SystemNavigationManager.getForCurrentView().appViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.collapsed;
         Windows.UI.Core.SystemNavigationManager.getForCurrentView().onbackrequested = "";
     }
 
     const chat = conn.chats.dict[jid];
-    title.innerHTML = chat.name;
+    addressee.innerHTML = chat.name;
     address.value = jid;
 
     let envelopes = chat.messages.array;
@@ -115,12 +116,18 @@ async function sendMessage() {
 }
 
 let conn;
-let title, messages, letter, address, send;
+let directory, sender, contacts;
+let conversation, addressee, messages, letter, address, send;
 window.onload = () => {
     conn = new WAConnection();
     connectToWhatsApp(conn);
 
-    title = document.getElementById("title");
+    directory = document.getElementById("directory");
+    sender = document.getElementById("sender");
+    contacts = document.getElementById("contacts");
+
+    conversation = document.getElementById("conversation");
+    addressee = document.getElementById("addressee");
     messages = document.getElementById("messages");
     letter = document.getElementById("letter");
     address = document.getElementById("address");
