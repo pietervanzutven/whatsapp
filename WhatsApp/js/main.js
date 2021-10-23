@@ -106,15 +106,14 @@ async function openConversation(jid) {
                     div.innerHTML += message.extendedTextMessage.text;
                 } else if (message.contactMessage) {
                     div.innerHTML += message.contactMessage.displayName + ": " + message.contactMessage.vcard;
-                } else if (message.imageMessage || message.audioMessage || message.documentMessage) {
-                    if (message.imageMessage) {
-                        const img = document.createElement("img");
-                        img.src = URL.createObjectURL(new Blob([message.imageMessage.jpegThumbnail], { type: 'image/png' }));
-                        div.appendChild(img);
-                        div.innerHTML += message.imageMessage.caption ? "\n" + message.imageMessage.caption : "";
-                    } else {
-                        div.innerHTML += "Attachment";
-                    }
+                } else if (message.imageMessage || message.videoMessage ) {
+                    const content = message.imageMessage || message.videoMessage;
+                    const img = document.createElement("img");
+                    img.src = URL.createObjectURL(new Blob([content.jpegThumbnail], { type: 'image/png' }));
+                    div.appendChild(img);
+                    div.innerHTML += content.caption ? "\n" + content.caption : "";
+                } else if (message.audioMessage || message.documentMessage) {
+                    div.innerHTML += "Attachment";
                 } else {
                     div.innerHTML += "Unkown message type!"
                 }
