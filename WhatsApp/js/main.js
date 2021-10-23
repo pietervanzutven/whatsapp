@@ -33,6 +33,7 @@ async function connectToWhatsApp(conn) {
 
     conn.on("contacts-received", () => {
         sender.innerHTML = conn.user.name;
+        contacts.innerHTML = "";
         conn.chats.array.forEach(chat => {
             const div = document.createElement("div");
             div.addEventListener("click", () => openConversation(chat.jid));
