@@ -124,6 +124,7 @@ async function openConversation(jid) {
             }
         });
         messages.scrollTop = messages.scrollHeight
+        conn.chatRead(jid);
     }
 }
 
