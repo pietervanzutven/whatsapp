@@ -31,22 +31,7 @@ async function connectToWhatsApp(conn) {
         Windows.Storage.ApplicationData.current.localSettings.values["authInfo"] = JSON.stringify(authInfo);
     });
 
-    conn.on("contacts-received", () => {
-        sender.innerHTML = conn.user.name;
-        contacts.innerHTML = "";
-        conn.chats.array.forEach(chat => {
-            const div = document.createElement("div");
-            div.addEventListener("click", () => openConversation(chat.jid));
-            if (chat.count > 0) {
-                div.innerHTML = "<b>" + chat.name + "</b>";
-            } else {
-                div.innerHTML = chat.name;
-            }
-            div.classList.add("contact");
-            contacts.appendChild(div);
-        });
-        pair.classList.add("hidden");
-    });
+    conn.on("contacts-received", openDirectory);
 
     if (authInfo) {
         conn.loadAuthInfo(JSON.parse(authInfo));
@@ -60,16 +45,33 @@ async function connectToWhatsApp(conn) {
     }
 }
 
-async function openConversation(jid) {
-    directory.classList.add("hidden");
+function openDirectory() {
+    sender.innerHTML = conn.user.name;
+    contacts.innerHTML = "";
+    conn.chats.array.forEach(chat => {
+        const div = document.createElement("div");
+        div.addEventListener("click", () => openConversation(chat.jid));
+        if (chat.count > 0) {
+            div.innerHTML = "<b>" + chat.name + "</b>";
+        } else {
+            div.innerHTML = chat.name;
+        }
+        div.classList.add("contact");
+        contacts.appendChild(div);
+    });
 
+    directory.classList.remove("hidden");
+    pair.classList.add("hidden");
+    conversation.classList.add("hidden");
+}
+
+async function openConversation(jid) {
     Windows.UI.Core.SystemNavigationManager.getForCurrentView().appViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.visible;
     Windows.UI.Core.SystemNavigationManager.getForCurrentView().onbackrequested = event => {
         event.handled = true;
-        conversation.classList.add("hidden");
-        directory.classList.remove("hidden");
         Windows.UI.Core.SystemNavigationManager.getForCurrentView().appViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.collapsed;
         Windows.UI.Core.SystemNavigationManager.getForCurrentView().onbackrequested = "";
+        openDirectory();
     }
 
     const chat = conn.chats.dict[jid];
@@ -77,6 +79,7 @@ async function openConversation(jid) {
     address.value = jid;
     messages.innerHTML = "";
 
+    directory.classList.add("hidden");
     conversation.classList.remove("hidden");
 
     let envelopes = chat.messages.array;
