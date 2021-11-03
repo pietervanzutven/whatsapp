@@ -10,7 +10,7 @@ async function connectToWhatsApp(conn) {
 
     conn.on("qr", qr => {
         QR.generate(qr, { small: true }, function (qrcode) {
-            const div = document.getElementById("qr");
+            const div = document.getElementById("pair");
             div.innerHTML = qrcode;
         });
         pair.classList.remove("hidden");
