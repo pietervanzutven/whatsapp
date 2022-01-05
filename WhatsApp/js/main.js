@@ -113,7 +113,9 @@ async function openConversation(jid) {
                     const content = message.imageMessage || message.videoMessage;
                     const img = document.createElement("img");
                     img.src = URL.createObjectURL(new Blob([content.jpegThumbnail], { type: 'image/png' }));
+                    img.id = envelope.key.id;
                     div.appendChild(img);
+                    div.addEventListener("click", () => loadImage(envelope));
                     div.innerHTML += content.caption ? "\n" + content.caption : "";
                 } else if (message.audioMessage || message.documentMessage) {
                     div.innerHTML += "Attachment";
@@ -133,6 +135,13 @@ async function openConversation(jid) {
 async function sendMessage() {
     await conn.sendMessage(address.value, letter.value, MessageType.text);
     letter.value = "";
+}
+
+async function loadImage(envelope) {
+    const buffer = await conn.downloadMediaMessage(envelope);
+    const img = document.getElementById(envelope.key.id);
+    img.src = URL.createObjectURL(new Blob([Uint8Array.from(buffer)], { type: 'image/png' }));
+    img.style.width = "100%";
 }
 
 let conn;
