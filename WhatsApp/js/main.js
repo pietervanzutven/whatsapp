@@ -133,8 +133,10 @@ async function openConversation(jid) {
 }
 
 function sendMessage() {
-    conn.sendMessage(address.value, letter.value, MessageType.text);
-    letter.value = "";
+    if (letter.value) {
+        conn.sendMessage(address.value, letter.value, MessageType.text);
+        letter.value = "";
+    }
 }
 
 async function loadImage(envelope) {
