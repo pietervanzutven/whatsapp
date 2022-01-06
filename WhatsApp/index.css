@@ -23,6 +23,10 @@
 }
 
 .footer {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
     height: 28px;
     margin: 5px 20px;
     padding: 5px;
@@ -80,8 +84,11 @@
 }
 
 .messages {
-    width: 100%;
-    height: calc(100% - 100px);
+    position: absolute;
+    bottom: 50px;
+    left: 0px;
+    right: 0px;
+    max-height: calc(100% - 100px);
     overflow-y: scroll;
 }
 
