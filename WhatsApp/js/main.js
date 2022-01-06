@@ -33,6 +33,12 @@ async function connectToWhatsApp(conn) {
 
     conn.on("contacts-received", loadDirectory);
 
+    conn.on("chat-update", chatUpdate => {
+        if (chatUpdate.hasNewMessage) {
+            loadConversation(chatUpdate.jid);
+        }
+    });
+
     if (authInfo) {
         conn.loadAuthInfo(JSON.parse(authInfo));
     }
@@ -69,7 +75,7 @@ function openDirectory() {
     conversation.classList.add("hidden");
 }
 
-async function loadConversation(jid) {
+function loadConversation(jid) {
     if (address.value === jid) {
         const chat = conn.chats.dict[jid];
         addressee.innerHTML = chat.name;
@@ -77,52 +83,50 @@ async function loadConversation(jid) {
 
         let envelopes = chat.messages.array;
         if (envelopes.length < 2) {
-            envelopes = (await conn.loadMessages(jid, 20)).messages;
+            conn.loadMessages(jid, 20).then(() => loadConversation(jid));
         }
-
-        if (address.value === jid) {
-            envelopes.forEach(envelope => {
-                const message = envelope.message;
-                if (message) {
-                    const div = document.createElement("div");
-                    if (envelope.key.fromMe) {
-                        div.classList.add("right");
-                        div.innerHTML = "<b>" + conn.user.name + "</b>\n";
+        
+        envelopes.forEach(envelope => {
+            const message = envelope.message;
+            if (message) {
+                const div = document.createElement("div");
+                if (envelope.key.fromMe) {
+                    div.classList.add("right");
+                    div.innerHTML = "<b>" + conn.user.name + "</b>\n";
+                } else {
+                    div.classList.add("left");
+                    if (envelope.key.participant) {
+                        div.innerHTML = "<b>" + conn.contacts[envelope.key.participant].name + "</b>\n";
                     } else {
-                        div.classList.add("left");
-                        if (envelope.key.participant) {
-                            div.innerHTML = "<b>" + conn.contacts[envelope.key.participant].name + "</b>\n";
-                        } else {
-                            div.innerHTML = "<b>" + conn.contacts[envelope.key.remoteJid].name + "</b>\n";
-                        }
+                        div.innerHTML = "<b>" + conn.contacts[envelope.key.remoteJid].name + "</b>\n";
                     }
-                    if (message.conversation) {
-                        div.innerHTML += message.conversation;
-                    } else if (message.extendedTextMessage) {
-                        div.innerHTML += message.extendedTextMessage.text;
-                    } else if (message.contactMessage) {
-                        div.innerHTML += message.contactMessage.displayName + ": " + message.contactMessage.vcard;
-                    } else if (message.imageMessage || message.videoMessage ) {
-                        const content = message.imageMessage || message.videoMessage;
-                        const img = document.createElement("img");
-                        img.src = URL.createObjectURL(new Blob([content.jpegThumbnail], { type: 'image/png' }));
-                        img.id = envelope.key.id;
-                        div.appendChild(img);
-                        div.addEventListener("click", () => loadImage(envelope));
-                        div.innerHTML += content.caption ? "\n" + content.caption : "";
-                    } else if (message.audioMessage || message.documentMessage) {
-                        div.innerHTML += "Attachment";
-                    } else {
-                        div.innerHTML += "Unkown message type!"
-                    }
-                    div.innerHTML += "\n<i>" + (new Date(envelope.messageTimestamp.low * 1000)).toLocaleString() + "</i";
-                    div.classList.add("message");
-                    messages.appendChild(div);
                 }
-            });
-            messages.scrollTop = messages.scrollHeight
-            conn.chatRead(jid);
-        }
+                if (message.conversation) {
+                    div.innerHTML += message.conversation;
+                } else if (message.extendedTextMessage) {
+                    div.innerHTML += message.extendedTextMessage.text;
+                } else if (message.contactMessage) {
+                    div.innerHTML += message.contactMessage.displayName + ": " + message.contactMessage.vcard;
+                } else if (message.imageMessage || message.videoMessage ) {
+                    const content = message.imageMessage || message.videoMessage;
+                    const img = document.createElement("img");
+                    img.src = URL.createObjectURL(new Blob([content.jpegThumbnail], { type: 'image/png' }));
+                    img.id = envelope.key.id;
+                    div.appendChild(img);
+                    div.addEventListener("click", () => loadImage(envelope));
+                    div.innerHTML += content.caption ? "\n" + content.caption : "";
+                } else if (message.audioMessage || message.documentMessage) {
+                    div.innerHTML += "Attachment";
+                } else {
+                    div.innerHTML += "Unkown message type!"
+                }
+                div.innerHTML += "\n<i>" + (new Date(envelope.messageTimestamp.low * 1000)).toLocaleString() + "</i";
+                div.classList.add("message");
+                messages.appendChild(div);
+            }
+        });
+        messages.scrollTop = messages.scrollHeight
+        conn.chatRead(jid);
     }
 }
 
