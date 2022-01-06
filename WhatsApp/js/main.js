@@ -132,8 +132,8 @@ async function openConversation(jid) {
     }
 }
 
-async function sendMessage() {
-    await conn.sendMessage(address.value, letter.value, MessageType.text);
+function sendMessage() {
+    conn.sendMessage(address.value, letter.value, MessageType.text);
     letter.value = "";
 }
 
