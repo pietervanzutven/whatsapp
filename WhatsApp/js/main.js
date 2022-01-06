@@ -31,7 +31,7 @@ async function connectToWhatsApp(conn) {
         Windows.Storage.ApplicationData.current.localSettings.values["authInfo"] = JSON.stringify(authInfo);
     });
 
-    conn.on("contacts-received", openDirectory);
+    conn.on("contacts-received", loadDirectory);
 
     if (authInfo) {
         conn.loadAuthInfo(JSON.parse(authInfo));
@@ -45,7 +45,7 @@ async function connectToWhatsApp(conn) {
     }
 }
 
-function openDirectory() {
+function loadDirectory() {
     sender.innerHTML = conn.user.name;
     contacts.innerHTML = "";
     conn.chats.array.forEach(chat => {
@@ -59,13 +59,78 @@ function openDirectory() {
         div.classList.add("contact");
         contacts.appendChild(div);
     });
+}
+
+function openDirectory() {
+    loadDirectory();
 
     directory.classList.remove("hidden");
     pair.classList.add("hidden");
     conversation.classList.add("hidden");
 }
 
-async function openConversation(jid) {
+async function loadConversation(jid) {
+    if (address.value === jid) {
+        const chat = conn.chats.dict[jid];
+        addressee.innerHTML = chat.name;
+        messages.innerHTML = "";
+
+        let envelopes = chat.messages.array;
+        if (envelopes.length < 2) {
+            envelopes = (await conn.loadMessages(jid, 20)).messages;
+        }
+
+        if (address.value === jid) {
+            envelopes.forEach(envelope => {
+                const message = envelope.message;
+                if (message) {
+                    const div = document.createElement("div");
+                    if (envelope.key.fromMe) {
+                        div.classList.add("right");
+                        div.innerHTML = "<b>" + conn.user.name + "</b>\n";
+                    } else {
+                        div.classList.add("left");
+                        if (envelope.key.participant) {
+                            div.innerHTML = "<b>" + conn.contacts[envelope.key.participant].name + "</b>\n";
+                        } else {
+                            div.innerHTML = "<b>" + conn.contacts[envelope.key.remoteJid].name + "</b>\n";
+                        }
+                    }
+                    if (message.conversation) {
+                        div.innerHTML += message.conversation;
+                    } else if (message.extendedTextMessage) {
+                        div.innerHTML += message.extendedTextMessage.text;
+                    } else if (message.contactMessage) {
+                        div.innerHTML += message.contactMessage.displayName + ": " + message.contactMessage.vcard;
+                    } else if (message.imageMessage || message.videoMessage ) {
+                        const content = message.imageMessage || message.videoMessage;
+                        const img = document.createElement("img");
+                        img.src = URL.createObjectURL(new Blob([content.jpegThumbnail], { type: 'image/png' }));
+                        img.id = envelope.key.id;
+                        div.appendChild(img);
+                        div.addEventListener("click", () => loadImage(envelope));
+                        div.innerHTML += content.caption ? "\n" + content.caption : "";
+                    } else if (message.audioMessage || message.documentMessage) {
+                        div.innerHTML += "Attachment";
+                    } else {
+                        div.innerHTML += "Unkown message type!"
+                    }
+                    div.innerHTML += "\n<i>" + (new Date(envelope.messageTimestamp.low * 1000)).toLocaleString() + "</i";
+                    div.classList.add("message");
+                    messages.appendChild(div);
+                }
+            });
+            messages.scrollTop = messages.scrollHeight
+            conn.chatRead(jid);
+        }
+    }
+}
+
+function openConversation(jid) {
+    address.value = jid;
+
+    loadConversation(jid);
+
     Windows.UI.Core.SystemNavigationManager.getForCurrentView().appViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.visible;
     Windows.UI.Core.SystemNavigationManager.getForCurrentView().onbackrequested = event => {
         event.handled = true;
@@ -74,62 +139,8 @@ async function openConversation(jid) {
         openDirectory();
     }
 
-    const chat = conn.chats.dict[jid];
-    addressee.innerHTML = chat.name;
-    address.value = jid;
-    messages.innerHTML = "";
-
     directory.classList.add("hidden");
     conversation.classList.remove("hidden");
-
-    let envelopes = chat.messages.array;
-    if (envelopes.length < 2) {
-        envelopes = (await conn.loadMessages(jid, 20)).messages;
-    }
-
-    if (address.value === jid) {
-        envelopes.forEach(envelope => {
-            const message = envelope.message;
-            if (message) {
-                const div = document.createElement("div");
-                if (envelope.key.fromMe) {
-                    div.classList.add("right");
-                    div.innerHTML = "<b>" + conn.user.name + "</b>\n";
-                } else {
-                    div.classList.add("left");
-                    if (envelope.key.participant) {
-                        div.innerHTML = "<b>" + conn.contacts[envelope.key.participant].name + "</b>\n";
-                    } else {
-                        div.innerHTML = "<b>" + conn.contacts[envelope.key.remoteJid].name + "</b>\n";
-                    }
-                }
-                if (message.conversation) {
-                    div.innerHTML += message.conversation;
-                } else if (message.extendedTextMessage) {
-                    div.innerHTML += message.extendedTextMessage.text;
-                } else if (message.contactMessage) {
-                    div.innerHTML += message.contactMessage.displayName + ": " + message.contactMessage.vcard;
-                } else if (message.imageMessage || message.videoMessage ) {
-                    const content = message.imageMessage || message.videoMessage;
-                    const img = document.createElement("img");
-                    img.src = URL.createObjectURL(new Blob([content.jpegThumbnail], { type: 'image/png' }));
-                    img.id = envelope.key.id;
-                    div.appendChild(img);
-                    div.addEventListener("click", () => loadImage(envelope));
-                    div.innerHTML += content.caption ? "\n" + content.caption : "";
-                } else if (message.audioMessage || message.documentMessage) {
-                    div.innerHTML += "Attachment";
-                } else {
-                    div.innerHTML += "Unkown message type!"
-                }
-                div.innerHTML += "\n<i>" + (new Date(envelope.messageTimestamp.low * 1000)).toLocaleString() + "</i";
-                div.classList.add("message");
-                messages.appendChild(div);
-            }
-        });
-        messages.scrollTop = messages.scrollHeight
-        conn.chatRead(jid);
-    }
 }
 
 function sendMessage() {
