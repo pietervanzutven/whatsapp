@@ -4,7 +4,7 @@ require("finally-polyfill");
 window.Buffer = require("buffer").Buffer;
 window.process = require("process");
 
-const baileys =  require("@adiwajshing/baileys/lib");
+const baileys = require("@adiwajshing/baileys/lib");
 const QR = require("qrcode-terminal/lib/main");
 
 async function connectToWhatsApp() {
@@ -23,7 +23,7 @@ async function connectToWhatsApp() {
                 status.className = "green";
                 break;
         }
-        if (update.isNewLogin) {
+        if (update.qr) {
             QR.generate(update.qr, { small: true }, function (qrcode) {
                 const div = document.getElementById("pair");
                 div.innerHTML = qrcode;
