@@ -1,54 +1,50 @@
 ﻿"use strict";
 
 require("finally-polyfill");
-const { MessageType, WAConnection } = require("@adiwajshing/baileys/lib");
-const QR = require("qrcode-terminal/lib/main");
 window.Buffer = require("buffer").Buffer;
+window.process = require("process");
 
-async function connectToWhatsApp(conn) {
-    const authInfo = Windows.Storage.ApplicationData.current.localSettings.values["authInfo"];
+const baileys =  require("@adiwajshing/baileys/lib");
+const QR = require("qrcode-terminal/lib/main");
 
-    conn.on("qr", qr => {
-        QR.generate(qr, { small: true }, function (qrcode) {
-            const div = document.getElementById("pair");
-            div.innerHTML = qrcode;
-        });
-        pair.classList.remove("hidden");
-        directory.classList.add("hidden");
-    });
+async function connectToWhatsApp() {
+    sock = baileys.default();
 
-    conn.on("close", () => {
-        status.className = "red";
-    });
-
-    conn.on("connecting", () => {
-        status.className = "orange";
-    });
-
-    conn.on("open", () => {
-        status.className = "green";
-        const authInfo = conn.base64EncodedAuthInfo();
-        Windows.Storage.ApplicationData.current.localSettings.values["authInfo"] = JSON.stringify(authInfo);
-    });
-
-    conn.on("contacts-received", loadDirectory);
-
-    conn.on("chat-update", chatUpdate => {
-        if (chatUpdate.hasNewMessage) {
-            loadConversation(chatUpdate.jid);
+    sock.ev.on("connection.update", update => {
+        console.log(update);
+        switch (update.connection) {
+            case "close":
+                status.className = "red";
+                break;
+            case "connecting":
+                status.className = "orange";
+                break;
+            case "open":
+                status.className = "green";
+                break;
+        }
+        if (update.isNewLogin) {
+            QR.generate(update.qr, { small: true }, function (qrcode) {
+                const div = document.getElementById("pair");
+                div.innerHTML = qrcode;
+            });
+            pair.classList.remove("hidden");
+            directory.classList.add("hidden");
         }
     });
 
-    if (authInfo) {
-        conn.loadAuthInfo(JSON.parse(authInfo));
-    }
+    sock.ev.on("creds.update", authInfo => {
+        console.log(authInfo);
+        Windows.Storage.ApplicationData.current.localSettings.values["authInfo"] = JSON.stringify(authInfo);
+    });
 
-    try {
-        await conn.connect();
-    } catch (error) {
-        conn.clearAuthInfo();
-        await conn.connect();
-    }
+    sock.ev.on("contacts.set", contacts => {
+        console.log(contacts);
+    });
+
+    sock.ev.on("chats.set", chats => {
+        console.log(chats);
+    });
 }
 
 function loadDirectory() {
@@ -110,7 +106,7 @@ function loadConversation(jid) {
                 } else if (message.imageMessage || message.videoMessage ) {
                     const content = message.imageMessage || message.videoMessage;
                     const img = document.createElement("img");
-                    img.src = URL.createObjectURL(new Blob([content.jpegThumbnail], { type: 'image/png' }));
+                    img.src = URL.createObjectURL(new Blob([content.jpegThumbnail], { type: "image/png" }));
                     img.id = envelope.key.id;
                     div.appendChild(img);
                     div.addEventListener("click", () => loadImage(envelope));
@@ -157,17 +153,15 @@ function sendMessage() {
 async function loadImage(envelope) {
     const buffer = await conn.downloadMediaMessage(envelope);
     const img = document.getElementById(envelope.key.id);
-    img.src = URL.createObjectURL(new Blob([Uint8Array.from(buffer)], { type: 'image/png' }));
+    img.src = URL.createObjectURL(new Blob([Uint8Array.from(buffer)], { type: "image/png" }));
     img.style.width = "100%";
 }
 
-let conn;
+let sock;
 let pair;
 let directory, sender, status, contacts;
 let conversation, addressee, messages, letter, address, send;
 window.onload = () => {
-    conn = new WAConnection();
-
     pair = document.getElementById("pair");
 
     directory = document.getElementById("directory");
@@ -182,7 +176,7 @@ window.onload = () => {
     address = document.getElementById("address");
     send = document.getElementById("send");
 
-    connectToWhatsApp(conn);
+    connectToWhatsApp();
 
     send.addEventListener("click", sendMessage);
 }
