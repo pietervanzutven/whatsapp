@@ -24,10 +24,7 @@ async function connectToWhatsApp() {
                 break;
         }
         if (update.qr) {
-            QR.generate(update.qr, { small: true }, function (qrcode) {
-                const div = document.getElementById("pair");
-                div.innerHTML = qrcode;
-            });
+            QR.generate(update.qr, { small: true }, qrcode => pair.innerHTML = qrcode);
             pair.classList.remove("hidden");
             directory.classList.add("hidden");
         }
