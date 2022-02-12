@@ -9,10 +9,7 @@ async function connectToWhatsApp(conn) {
     const authInfo = Windows.Storage.ApplicationData.current.localSettings.values["authInfo"];
 
     conn.on("qr", qr => {
-        QR.generate(qr, { small: true }, function (qrcode) {
-            const div = document.getElementById("pair");
-            div.innerHTML = qrcode;
-        });
+        QR.generate(qr, { small: true }, qrcode => pair.innerHTML = qrcode);
         pair.classList.remove("hidden");
         directory.classList.add("hidden");
     });
