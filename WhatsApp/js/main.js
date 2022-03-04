@@ -8,8 +8,9 @@ const baileys = require("@adiwajshing/baileys/lib");
 const QR = require("qrcode-terminal/lib/main");
 
 async function connectToWhatsApp() {
-    sock = baileys.default();
-
+    const { state, saveState } = baileys.useSingleFileAuthState('./auth_info_multi.json');
+    sock = baileys.default({ auth: state });
+    
     sock.ev.on("connection.update", update => {
         console.log(update);
         switch (update.connection) {
@@ -30,10 +31,7 @@ async function connectToWhatsApp() {
         }
     });
 
-    sock.ev.on("creds.update", authInfo => {
-        console.log(authInfo);
-        Windows.Storage.ApplicationData.current.localSettings.values["authInfo"] = JSON.stringify(authInfo);
-    });
+    sock.ev.on("creds.update", saveState);
 
     sock.ev.on("contacts.set", contacts => {
         console.log(contacts);
