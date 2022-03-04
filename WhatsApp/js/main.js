@@ -16,6 +16,14 @@ async function connectToWhatsApp() {
         switch (update.connection) {
             case "close":
                 status.className = "red";
+
+                const shouldReconnect = update.lastDisconnect.error.output.statusCode !== baileys.DisconnectReason.loggedOut
+                console.log('connection closed due to ', update.lastDisconnect.error, ', reconnecting ', shouldReconnect)
+                // reconnect if not logged out
+                if(shouldReconnect) {
+                    connectToWhatsApp()
+                }
+
                 break;
             case "connecting":
                 status.className = "orange";
