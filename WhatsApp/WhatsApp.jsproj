@@ -232,6 +232,8 @@
     <Content Include="js\node_modules\%40protobufjs\utf8\index.js" />
     <Content Include="js\node_modules\assert\index.js" />
     <Content Include="js\node_modules\assert-browserify\index.js" />
+    <Content Include="js\node_modules\axios\axios.js" />
+    <Content Include="js\node_modules\axios\index.js" />
     <Content Include="js\node_modules\base64-js\index.js" />
     <Content Include="js\node_modules\buffer\index.js" />
     <Content Include="js\node_modules\clone\index.js" />
