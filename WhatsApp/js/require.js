@@ -26,7 +26,7 @@
             return module.exports;
         } else if (require.scripts[script + '/index']) {
             const module = { exports: {} };
-            require.modules[script + '/index'] = module;
+            require.modules[script] = module;
             require.scripts[script + '/index'](module.exports, module);
             return module.exports;
         } else {
