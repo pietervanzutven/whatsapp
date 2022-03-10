@@ -6,9 +6,15 @@ window.process = require("process");
 
 const baileys = require("@adiwajshing/baileys/lib");
 const QR = require("qrcode-terminal/lib/main");
+const fs = require("fs");
 
 async function connectToWhatsApp() {
-    const { state, saveState } = baileys.useSingleFileAuthState('./auth_info_multi.json');
+    await fs.prepareFileAsync('auth_info_multi.json');
+    startSock();
+}
+
+async function startSock() {
+    const { state, saveState } = baileys.useSingleFileAuthState('auth_info_multi.json');
     sock = baileys.default({ auth: state });
     
     sock.ev.on("connection.update", update => {
@@ -19,7 +25,7 @@ async function connectToWhatsApp() {
 
                 const error = update.lastDisconnect.error;
                 if (error.output && error.output.statusCode !== baileys.DisconnectReason.loggedOut) {
-                    connectToWhatsApp()
+                    startSock()
                 }
 
                 break;
