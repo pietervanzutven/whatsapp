@@ -7,15 +7,25 @@ window.process = require("process");
 const baileys = require("@adiwajshing/baileys/lib");
 const QR = require("qrcode-terminal/lib/main");
 const fs = require("fs");
+const P  = require("pino").default();
 
 async function connectToWhatsApp() {
     await fs.prepareFileAsync('auth_info_multi.json');
+    const authState = baileys.useSingleFileAuthState('auth_info_multi.json');
+    state = authState.state;
+    saveState = authState.saveState;
+
+    await fs.prepareFileAsync('baileys_store_multi.json');
+    store = baileys.makeInMemoryStore({ logger: P.child() });
+    store.readFromFile('baileys_store_multi.json');
+    setInterval(() => store.writeToFile('baileys_store_multi.json'), 10000);
+
     startSock();
 }
 
 async function startSock() {
-    const { state, saveState } = baileys.useSingleFileAuthState('auth_info_multi.json');
     sock = baileys.default({ auth: state });
+    store.bind(sock.ev);
     
     sock.ev.on("connection.update", update => {
         console.log(update);
@@ -25,7 +35,7 @@ async function startSock() {
 
                 const error = update.lastDisconnect.error;
                 if (error.output && error.output.statusCode !== baileys.DisconnectReason.loggedOut) {
-                    startSock()
+                    startSock();
                 }
 
                 break;
@@ -164,7 +174,7 @@ async function loadImage(envelope) {
     img.style.width = "100%";
 }
 
-let sock;
+let sock, state, saveState, store;
 let pair;
 let directory, sender, status, contacts;
 let conversation, addressee, messages, letter, address, send;
