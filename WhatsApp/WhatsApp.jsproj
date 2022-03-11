@@ -195,6 +195,7 @@
     <Content Include="js\node_modules\%40adiwajshing\baileys\WASignalGroup\sender_key_record.js" />
     <Content Include="js\node_modules\%40adiwajshing\baileys\WASignalGroup\sender_key_state.js" />
     <Content Include="js\node_modules\%40adiwajshing\baileys\WASignalGroup\sender_message_key.js" />
+    <Content Include="js\node_modules\%40adiwajshing\keyed-db\index.js" />
     <Content Include="js\node_modules\%40adiwajshing\keyed-db\lib\BinarySearch.js" />
     <Content Include="js\node_modules\%40adiwajshing\keyed-db\lib\KeyedDB.js" />
     <Content Include="js\node_modules\%40hapi\boom\index.js" />
