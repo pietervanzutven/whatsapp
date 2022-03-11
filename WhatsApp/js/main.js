@@ -21,6 +21,8 @@ async function connectToWhatsApp() {
     setInterval(() => store.writeToFile('baileys_store_multi.json'), 10000);
 
     startSock();
+
+    openDirectory();
 }
 
 async function startSock() {
@@ -54,26 +56,18 @@ async function startSock() {
     });
 
     sock.ev.on("creds.update", saveState);
-
-    sock.ev.on("contacts.set", contacts => {
-        console.log(contacts);
-    });
-
-    sock.ev.on("chats.set", chats => {
-        console.log(chats);
-    });
 }
 
 function loadDirectory() {
-    sender.innerHTML = conn.user.name;
+    sender.innerHTML = sock.user.name;
     contacts.innerHTML = "";
-    conn.chats.array.forEach(chat => {
+    store.chats.array.forEach(chat => {
         const div = document.createElement("div");
-        div.addEventListener("click", () => openConversation(chat.jid));
-        if (chat.count > 0) {
-            div.innerHTML = "<b>" + chat.name + "</b>";
+        div.addEventListener("click", () => openConversation(chat.id));
+        if (chat.unreadCount > 0) {
+            div.innerHTML = "<b>" + (chat.name || chat.id) + "</b>";
         } else {
-            div.innerHTML = chat.name;
+            div.innerHTML = chat.name || chat.id;
         }
         div.classList.add("contact");
         contacts.appendChild(div);
@@ -88,31 +82,22 @@ function openDirectory() {
     conversation.classList.add("hidden");
 }
 
-function loadConversation(jid) {
-    if (address.value === jid) {
-        const chat = conn.chats.dict[jid];
-        addressee.innerHTML = chat.name;
+function loadConversation(id) {
+    if (address.value === id) {
+        addressee.innerHTML = store.chats.dict[id].name || store.chats.dict[id].id;
         messages.innerHTML = "";
 
-        let envelopes = chat.messages.array;
-        if (envelopes.length < 2) {
-            conn.loadMessages(jid, 20).then(() => loadConversation(jid));
-        }
-        
+        let envelopes = store.messages[id].array;
         envelopes.forEach(envelope => {
             const message = envelope.message;
             if (message) {
                 const div = document.createElement("div");
                 if (envelope.key.fromMe) {
                     div.classList.add("right");
-                    div.innerHTML = "<b>" + conn.user.name + "</b>\n";
+                    div.innerHTML = "<b>" + sock.user.name + "</b>\n";
                 } else {
                     div.classList.add("left");
-                    if (envelope.key.participant) {
-                        div.innerHTML = "<b>" + conn.contacts[envelope.key.participant].name + "</b>\n";
-                    } else {
-                        div.innerHTML = "<b>" + conn.contacts[envelope.key.remoteJid].name + "</b>\n";
-                    }
+                    div.innerHTML = "<b>" + envelope.pushName + "</b>\n";
                 }
                 if (message.conversation) {
                     div.innerHTML += message.conversation;
@@ -126,7 +111,7 @@ function loadConversation(jid) {
                     img.src = URL.createObjectURL(new Blob([content.jpegThumbnail], { type: "image/png" }));
                     img.id = envelope.key.id;
                     div.appendChild(img);
-                    div.addEventListener("click", () => loadImage(envelope));
+                    //div.addEventListener("click", () => loadImage(envelope));
                     div.innerHTML += content.caption ? "\n" + content.caption : "";
                 } else if (message.audioMessage || message.documentMessage) {
                     div.innerHTML += "Attachment";
@@ -137,16 +122,16 @@ function loadConversation(jid) {
                 div.classList.add("message");
                 messages.appendChild(div);
             }
+            sock.sendReadReceipt(envelope.key.remoteJid, envelope.key.participant, [envelope.key.id]);
         });
         messages.scrollTop = messages.scrollHeight
-        conn.chatRead(jid);
     }
 }
 
-function openConversation(jid) {
-    address.value = jid;
+function openConversation(id) {
+    address.value = id;
 
-    loadConversation(jid);
+    loadConversation(id);
 
     Windows.UI.Core.SystemNavigationManager.getForCurrentView().appViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.visible;
     Windows.UI.Core.SystemNavigationManager.getForCurrentView().onbackrequested = event => {
@@ -162,13 +147,13 @@ function openConversation(jid) {
 
 function sendMessage() {
     if (letter.value) {
-        conn.sendMessage(address.value, letter.value, MessageType.text);
+        sock.sendMessage(address.value, { text: letter.value });
         letter.value = "";
     }
 }
 
 async function loadImage(envelope) {
-    const buffer = await conn.downloadMediaMessage(envelope);
+    const buffer = await sock.downloadMediaMessage(envelope);
     const img = document.getElementById(envelope.key.id);
     img.src = URL.createObjectURL(new Blob([Uint8Array.from(buffer)], { type: "image/png" }));
     img.style.width = "100%";
