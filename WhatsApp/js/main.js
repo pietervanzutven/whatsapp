@@ -87,7 +87,7 @@ function loadConversation(id) {
         addressee.innerHTML = store.chats.dict[id].name || store.chats.dict[id].id;
         messages.innerHTML = "";
 
-        let envelopes = store.messages[id].array;
+        let envelopes = store.messages[id].array.sort((envelope1, envelope2) => envelope1.messageTimestamp.toNumber() - envelope2.messageTimestamp.toNumber());
         envelopes.forEach(envelope => {
             const message = envelope.message;
             if (message) {
@@ -118,7 +118,7 @@ function loadConversation(id) {
                 } else {
                     div.innerHTML += "Unkown message type!"
                 }
-                div.innerHTML += "\n<i>" + (new Date(envelope.messageTimestamp.low * 1000)).toLocaleString() + "</i";
+                div.innerHTML += "\n<i>" + (new Date(envelope.messageTimestamp.toNumber()*1000)).toLocaleString() + "</i>";
                 div.classList.add("message");
                 messages.appendChild(div);
             }
