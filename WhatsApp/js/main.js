@@ -7,7 +7,7 @@ window.process = require("process");
 const baileys = require("@adiwajshing/baileys/lib");
 const QR = require("qrcode-terminal/lib/main");
 const fs = require("fs");
-const P  = require("pino");
+const P  = require("pino").default();
 
 async function connectToWhatsApp() {
     await fs.prepareFileAsync('auth_info_multi.json');
@@ -16,7 +16,7 @@ async function connectToWhatsApp() {
     saveState = authState.saveState;
 
     await fs.prepareFileAsync('baileys_store_multi.json');
-    store = baileys.makeInMemoryStore({ logger: P().child({ level: 'debug', stream: 'store' }) });
+    store = baileys.makeInMemoryStore({ logger: P.child() });
     store.readFromFile('baileys_store_multi.json');
     setInterval(() => store.writeToFile('baileys_store_multi.json'), 10000);
 
