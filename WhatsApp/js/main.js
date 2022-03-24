@@ -87,7 +87,8 @@ function loadConversation(id) {
         addressee.innerHTML = store.chats.dict[id].name || store.chats.dict[id].id;
         messages.innerHTML = "";
 
-        let envelopes = store.messages[id].array.sort((envelope1, envelope2) => {
+        let envelopes = store.messages[id].array.slice(-20);
+        envelopes = envelopes.sort((envelope1, envelope2) => {
             (envelope1.messageTimestamp.low || envelope1.messageTimestamp) - (envelope2.messageTimestamp.low || envelope2.messageTimestamp);
         });
         envelopes.forEach(envelope => {
