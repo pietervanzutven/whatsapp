@@ -89,7 +89,7 @@ function loadConversation(id) {
 
         let envelopes = store.messages[id].array.slice(-20);
         envelopes = envelopes.sort((envelope1, envelope2) => {
-            (envelope1.messageTimestamp.low || envelope1.messageTimestamp) - (envelope2.messageTimestamp.low || envelope2.messageTimestamp);
+            return (envelope1.messageTimestamp.low || envelope1.messageTimestamp) - (envelope2.messageTimestamp.low || envelope2.messageTimestamp);
         });
         envelopes.forEach(envelope => {
             const message = envelope.message;
@@ -150,7 +150,7 @@ function openConversation(id) {
 
 function sendMessage() {
     if (letter.value) {
-        sock.sendMessage(address.value, { text: letter.value });
+        sock.sendMessage(address.value, { text: letter.value }, { logger: P });
         letter.value = "";
     }
 }
