@@ -9,6 +9,8 @@ const QR = require("qrcode-terminal/lib/main");
 const fs = require("fs");
 const P  = require("pino").default();
 
+Windows.UI.WebUI.WebUIApplication.onresuming = reconnect;
+
 async function connectToWhatsApp() {
     await fs.prepareFileAsync('auth_info_multi.json');
     const authState = baileys.useSingleFileAuthState('auth_info_multi.json');
@@ -56,6 +58,12 @@ async function startSock() {
     });
 
     sock.ev.on("creds.update", saveState);
+}
+
+function reconnect() {
+    if (sock.ws.readyState === sock.ws.CLOSED) {
+        startSock();
+    };
 }
 
 function loadDirectory() {
@@ -184,4 +192,5 @@ window.onload = () => {
     connectToWhatsApp();
 
     send.addEventListener("click", sendMessage);
+    status.addEventListener("click", reconnect);
 }
