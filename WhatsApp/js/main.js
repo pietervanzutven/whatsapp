@@ -122,7 +122,7 @@ function loadConversation(id) {
                     img.src = URL.createObjectURL(new Blob([content.jpegThumbnail], { type: "image/png" }));
                     img.id = envelope.key.id;
                     div.appendChild(img);
-                    //div.addEventListener("click", () => loadImage(envelope));
+                    div.addEventListener("click", () => loadImage(envelope));
                     div.innerHTML += content.caption ? "\n" + content.caption : "";
                 } else if (message.audioMessage || message.documentMessage) {
                     div.innerHTML += "Attachment";
@@ -135,7 +135,7 @@ function loadConversation(id) {
             }
             sock.sendReadReceipt(envelope.key.remoteJid, envelope.key.participant, [envelope.key.id]);
         });
-        setTimeout(() => messages.scrollTop = messages.scrollHeight, 1);
+        setTimeout(() => messages.scrollTop = messages.scrollHeight, 1);      
     }
 }
 
@@ -164,7 +164,12 @@ function sendMessage() {
 }
 
 async function loadImage(envelope) {
-    const buffer = await sock.downloadMediaMessage(envelope);
+    const stream = await baileys.downloadContentFromMessage(envelope.message.imageMessage, 'image');
+    let buffer = Buffer.from([]);
+    let chunk;
+    while (null !== (chunk = stream.read())) {
+        buffer = Buffer.concat([buffer, chunk]);
+    }
     const img = document.getElementById(envelope.key.id);
     img.src = URL.createObjectURL(new Blob([Uint8Array.from(buffer)], { type: "image/png" }));
     img.style.width = "100%";
