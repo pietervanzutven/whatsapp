@@ -135,7 +135,8 @@ function loadConversation(id) {
             }
             sock.sendReadReceipt(envelope.key.remoteJid, envelope.key.participant, [envelope.key.id]);
         });
-        setTimeout(() => messages.scrollTop = messages.scrollHeight, 1);      
+        setTimeout(() => messages.scrollTop = messages.scrollHeight, 1);
+        store.chats.dict[id].unreadCount = 0;
     }
 }
 
