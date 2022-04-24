@@ -36,18 +36,14 @@ async function startSock() {
         switch (update.connection) {
             case "close":
                 status.className = "red";
-
-                const error = update.lastDisconnect.error;
-                if (error.output && error.output.statusCode !== baileys.DisconnectReason.loggedOut) {
-                    startSock();
-                }
-
+                reconnect();
                 break;
             case "connecting":
                 status.className = "orange";
                 break;
             case "open":
                 status.className = "green";
+                loadDirectory();
                 break;
         }
         if (update.qr) {
@@ -58,6 +54,17 @@ async function startSock() {
     });
 
     sock.ev.on("creds.update", saveState);
+    sock.ev.on("chats.upsert", () => {
+        loadDirectory();
+    });
+    sock.ev.on("chats.update", chat => {
+        loadDirectory();
+    });
+    sock.ev.on("messages.upsert", upsert => {
+        upsert.messages.forEach(message => {
+            loadConversation(message.key.remoteJid);
+        });
+    });
 }
 
 function reconnect() {
@@ -72,10 +79,11 @@ function loadDirectory() {
     store.chats.array.forEach(chat => {
         const div = document.createElement("div");
         div.addEventListener("click", () => openConversation(chat.id));
+        const name = (store.contacts[chat.id].notify || chat.id);
         if (chat.unreadCount > 0) {
-            div.innerHTML = "<b>" + (chat.name || chat.id) + "</b>";
+            div.innerHTML = "<b>" + name + "</b>";
         } else {
-            div.innerHTML = chat.name || chat.id;
+            div.innerHTML = name;
         }
         div.classList.add("contact");
         contacts.appendChild(div);
