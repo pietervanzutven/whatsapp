@@ -9,8 +9,6 @@ const QR = require("qrcode-terminal/lib/main");
 const fs = require("fs");
 const P  = require("pino").default();
 
-Windows.UI.WebUI.WebUIApplication.onresuming = reconnect;
-
 async function connectToWhatsApp() {
     await fs.prepareFileAsync('auth_info_multi.json');
     const authState = baileys.useSingleFileAuthState('auth_info_multi.json');
@@ -22,55 +20,48 @@ async function connectToWhatsApp() {
     store.readFromFile('baileys_store_multi.json');
     setInterval(() => store.writeToFile('baileys_store_multi.json'), 10000);
 
-    startSock();
-
-    openDirectory();
+    setInterval(startSock, 1000);
 }
 
-async function startSock() {
-    sock = baileys.default({ auth: state });
-    store.bind(sock.ev);
+function startSock() {
+    if (!sock || sock.ws.readyState === sock.ws.CLOSED) {
+        sock = baileys.default({ auth: state });
+        store.bind(sock.ev);
     
-    sock.ev.on("connection.update", update => {
-        console.log(update);
-        switch (update.connection) {
-            case "close":
-                status.className = "red";
-                reconnect();
-                break;
-            case "connecting":
-                status.className = "orange";
-                break;
-            case "open":
-                status.className = "green";
-                loadDirectory();
-                break;
-        }
-        if (update.qr) {
-            QR.generate(update.qr, { small: true }, qrcode => pair.innerHTML = qrcode);
-            pair.classList.remove("hidden");
-            directory.classList.add("hidden");
-        }
-    });
-
-    sock.ev.on("creds.update", saveState);
-    sock.ev.on("chats.upsert", () => {
-        loadDirectory();
-    });
-    sock.ev.on("chats.update", chat => {
-        loadDirectory();
-    });
-    sock.ev.on("messages.upsert", upsert => {
-        upsert.messages.forEach(message => {
-            loadConversation(message.key.remoteJid);
+        sock.ev.on("connection.update", update => {
+            console.log(update);
+            switch (update.connection) {
+                case "close":
+                    status.className = "red";
+                    break;
+                case "connecting":
+                    status.className = "orange";
+                    break;
+                case "open":
+                    status.className = "green";
+                    loadDirectory();
+                    break;
+            }
+            if (update.qr) {
+                QR.generate(update.qr, { small: true }, qrcode => pair.innerHTML = qrcode);
+                pair.classList.remove("hidden");
+                directory.classList.add("hidden");
+            }
         });
-    });
-}
 
-function reconnect() {
-    if (sock.ws.readyState === sock.ws.CLOSED) {
-        startSock();
-    };
+        sock.ev.on("creds.update", saveState);
+        sock.ev.on("chats.upsert", () => {
+            loadDirectory();
+        });
+        sock.ev.on("chats.update", chat => {
+            loadDirectory();
+        });
+        sock.ev.on("messages.upsert", upsert => {
+            upsert.messages.forEach(message => {
+                loadConversation(message.key.remoteJid);
+            });
+        });
+    }
 }
 
 function loadDirectory() {
@@ -206,5 +197,5 @@ window.onload = () => {
     connectToWhatsApp();
 
     send.addEventListener("click", sendMessage);
-    status.addEventListener("click", reconnect);
+    status.addEventListener("click", startSock);
 }
