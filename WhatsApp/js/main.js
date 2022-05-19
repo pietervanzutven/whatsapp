@@ -156,10 +156,23 @@ function openConversation(id) {
     conversation.classList.remove("hidden");
 }
 
-function sendMessage() {
+async function sendMessage() {
     if (letter.value) {
         sock.sendMessage(address.value, { text: letter.value }, { logger: P });
         letter.value = "";
+    } else {
+        const picker = Windows.Storage.Pickers.FileOpenPicker();
+        picker.suggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.picturesLibrary;
+        picker.fileTypeFilter.append(".jpg");
+        picker.fileTypeFilter.append(".jpeg");
+        picker.fileTypeFilter.append(".png");
+
+        const file = await picker.pickSingleFileAsync();
+        let buffer = await Windows.Storage.FileIO.readBufferAsync(file);
+
+        buffer = Buffer.from(new Uint8Array(buffer));
+
+        sock.sendMessage(address.value, { image: buffer, jpegThumbnail: null }, { logger: P });
     }
 }
 
