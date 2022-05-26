@@ -118,10 +118,15 @@ function loadConversation(id) {
                 } else if (message.imageMessage || message.videoMessage ) {
                     const content = message.imageMessage || message.videoMessage;
                     const img = document.createElement("img");
-                    img.src = URL.createObjectURL(new Blob([content.jpegThumbnail], { type: "image/png" }));
-                    img.id = envelope.key.id;
+                    if (message.imageMessage && message.imageMessage.directPath.includes('ms-appdata')) {
+                        img.src = message.imageMessage.directPath;
+                        img.style.width = "100%";
+                    } else {
+                        img.src = URL.createObjectURL(new Blob([content.jpegThumbnail], { type: "image/png" }));
+                        img.id = envelope.key.id;
+                        div.addEventListener("click", () => loadImage(envelope));
+                    }
                     div.appendChild(img);
-                    div.addEventListener("click", () => loadImage(envelope));
                     div.innerHTML += content.caption ? "\n" + content.caption : "";
                 } else if (message.audioMessage || message.documentMessage) {
                     div.innerHTML += "Attachment";
@@ -183,9 +188,16 @@ async function loadImage(envelope) {
     while (null !== (chunk = stream.read())) {
         buffer = Buffer.concat([buffer, chunk]);
     }
+
+    const fileName = Date.now().toString() + '.jpg';
+    const file = await Windows.Storage.ApplicationData.current.localFolder.createFileAsync(fileName,Windows.Storage.CreationCollisionOption.replaceExisting);
+    await Windows.Storage.FileIO.writeBytesAsync(file, buffer);
+
     const img = document.getElementById(envelope.key.id);
-    img.src = URL.createObjectURL(new Blob([Uint8Array.from(buffer)], { type: "image/png" }));
+    img.src = 'ms-appdata:///local/' + fileName;
     img.style.width = "100%";
+
+    envelope.message.imageMessage.directPath = img.src;
 }
 
 let sock, state, saveState, store;
