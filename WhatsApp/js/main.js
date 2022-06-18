@@ -115,18 +115,24 @@ function loadConversation(id) {
                     div.innerHTML += message.extendedTextMessage.text;
                 } else if (message.contactMessage) {
                     div.innerHTML += message.contactMessage.displayName + ": " + message.contactMessage.vcard;
-                } else if (message.imageMessage || message.videoMessage ) {
+                } else if (message.imageMessage || message.videoMessage) {
                     const content = message.imageMessage || message.videoMessage;
-                    const img = document.createElement("img");
-                    if (message.imageMessage && message.imageMessage.directPath.includes('ms-appdata')) {
-                        img.src = message.imageMessage.directPath;
-                        img.style.width = "100%";
+                    let element;
+                    if (content.directPath.includes("ms-appdata")) {
+                        element = message.imageMessage ? document.createElement("img") : document.createElement("video");
+                        ("controls" in element) && (element.controls = true);
+                        element.src = content.directPath;
+                        element.style.width = "100%";
                     } else {
-                        img.src = URL.createObjectURL(new Blob([content.jpegThumbnail], { type: "image/png" }));
-                        img.id = envelope.key.id;
-                        div.addEventListener("click", () => loadImage(envelope));
+                        element = document.createElement("img");
+                        element.src = URL.createObjectURL(new Blob([content.jpegThumbnail], { type: "image/png" }));
+                        element.id = envelope.key.id;
+                        div.addEventListener("click", async () => {
+                            await loadAttachment(content);
+                            loadConversation(id);
+                        });
                     }
-                    div.appendChild(img);
+                    div.appendChild(element);
                     div.innerHTML += content.caption ? "\n" + content.caption : "";
                 } else if (message.audioMessage || message.documentMessage) {
                     div.innerHTML += "Attachment";
@@ -139,7 +145,6 @@ function loadConversation(id) {
             }
             sock.sendReadReceipt(envelope.key.remoteJid, envelope.key.participant, [envelope.key.id]);
         });
-        setTimeout(() => messages.scrollTop = messages.scrollHeight, 1);
         store.chats.dict[id].unreadCount = 0;
     }
 }
@@ -159,6 +164,8 @@ function openConversation(id) {
 
     directory.classList.add("hidden");
     conversation.classList.remove("hidden");
+
+    setTimeout(() => messages.scrollTop = messages.scrollHeight, 10);
 }
 
 async function sendMessage() {
@@ -178,26 +185,24 @@ async function sendMessage() {
         buffer = Buffer.from(new Uint8Array(buffer));
 
         sock.sendMessage(address.value, { image: buffer, jpegThumbnail: null }, { logger: P });
+        }
     }
 }
 
-async function loadImage(envelope) {
-    const stream = await baileys.downloadContentFromMessage(envelope.message.imageMessage, 'image');
+async function loadAttachment(content) {
+    const type = content.mimetype.split('/');
+    const stream = await baileys.downloadContentFromMessage(content, type[0]);
     let buffer = Buffer.from([]);
     let chunk;
     while (null !== (chunk = stream.read())) {
         buffer = Buffer.concat([buffer, chunk]);
     }
 
-    const fileName = Date.now().toString() + '.jpg';
+    const fileName = Date.now().toString() + '.' + type[1];
     const file = await Windows.Storage.ApplicationData.current.localFolder.createFileAsync(fileName,Windows.Storage.CreationCollisionOption.replaceExisting);
     await Windows.Storage.FileIO.writeBytesAsync(file, buffer);
 
-    const img = document.getElementById(envelope.key.id);
-    img.src = 'ms-appdata:///local/' + fileName;
-    img.style.width = "100%";
-
-    envelope.message.imageMessage.directPath = img.src;
+    content.directPath = 'ms-appdata:///local/' + fileName;
 }
 
 let sock, state, saveState, store;
