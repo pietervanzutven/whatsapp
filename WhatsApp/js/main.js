@@ -70,7 +70,7 @@ function loadDirectory() {
     store.chats.array.forEach(chat => {
         const div = document.createElement("div");
         div.addEventListener("click", () => openConversation(chat.id));
-        const name = (store.contacts[chat.id].notify || chat.id);
+        const name = ((store.contacts[chat.id] && store.contacts[chat.id].notify) || chat.id);
         if (chat.unreadCount > 0) {
             div.innerHTML = "<b>" + name + "</b>";
         } else {
