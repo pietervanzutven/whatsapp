@@ -137,7 +137,7 @@ function loadConversation(id) {
                 } else if (message.audioMessage || message.documentMessage) {
                     div.innerHTML += "Attachment";
                 } else {
-                    div.innerHTML += "Unkown message type!"
+                    div.innerHTML += "Unkown message type: " + JSON.stringify(message);
                 }
                 div.innerHTML += "\n<i>" + (new Date((envelope.messageTimestamp.low || envelope.messageTimestamp) * 1000)).toLocaleString() + "</i>";
                 div.classList.add("message");
