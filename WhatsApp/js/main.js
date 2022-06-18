@@ -180,11 +180,10 @@ async function sendMessage() {
         picker.fileTypeFilter.append(".png");
 
         const file = await picker.pickSingleFileAsync();
-        let buffer = await Windows.Storage.FileIO.readBufferAsync(file);
-
-        buffer = Buffer.from(new Uint8Array(buffer));
-
-        sock.sendMessage(address.value, { image: buffer, jpegThumbnail: null }, { logger: P });
+        if (file) {
+            let buffer = await Windows.Storage.FileIO.readBufferAsync(file);
+            buffer = Buffer.from(new Uint8Array(buffer));
+            sock.sendMessage(address.value, { image: buffer, jpegThumbnail: null }, { logger: P });
         }
     }
 }
