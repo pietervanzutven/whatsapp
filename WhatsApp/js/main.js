@@ -16,7 +16,7 @@ async function connectToWhatsApp() {
     saveState = authState.saveState;
 
     await fs.prepareFileAsync('baileys_store_multi.json');
-    store = baileys.makeInMemoryStore({ logger: P.child() });
+    store = baileys.makeInMemoryStore({ });
     store.readFromFile('baileys_store_multi.json');
     setInterval(() => store.writeToFile('baileys_store_multi.json'), 10000);
 
