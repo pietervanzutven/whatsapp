@@ -1,5 +1,6 @@
 ﻿"use strict";
 
+require("allsettled-polyfill");
 require("finally-polyfill");
 window.Buffer = require("buffer").Buffer;
 window.process = require("process");
@@ -143,7 +144,7 @@ function loadConversation(id) {
                 div.classList.add("message");
                 messages.appendChild(div);
             }
-            sock.sendReadReceipt(envelope.key.remoteJid, envelope.key.participant, [envelope.key.id]);
+            sock.sendReceipt(envelope.key.remoteJid, envelope.key.participant, [envelope.key.id]);
         });
         store.chats.dict[id].unreadCount = 0;
     }

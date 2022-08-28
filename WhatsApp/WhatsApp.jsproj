@@ -172,6 +172,7 @@
     <Content Include="js\node_modules\%40adiwajshing\baileys\lib\Utils\chat-utils.js" />
     <Content Include="js\node_modules\%40adiwajshing\baileys\lib\Utils\crypto.js" />
     <Content Include="js\node_modules\%40adiwajshing\baileys\lib\Utils\decode-wa-message.js" />
+    <Content Include="js\node_modules\%40adiwajshing\baileys\lib\Utils\event-buffer.js" />
     <Content Include="js\node_modules\%40adiwajshing\baileys\lib\Utils\generics.js" />
     <Content Include="js\node_modules\%40adiwajshing\baileys\lib\Utils\history.js" />
     <Content Include="js\node_modules\%40adiwajshing\baileys\lib\Utils\index.js" />
@@ -248,6 +249,7 @@
     <Content Include="js\node_modules\%40protobufjs\inquire\index.js" />
     <Content Include="js\node_modules\%40protobufjs\pool\index.js" />
     <Content Include="js\node_modules\%40protobufjs\utf8\index.js" />
+    <Content Include="js\node_modules\allsettled-polyfill\index.js" />
     <Content Include="js\node_modules\assert\index.js" />
     <Content Include="js\node_modules\assert-browserify\index.js" />
     <Content Include="js\node_modules\axios\index.js" />
