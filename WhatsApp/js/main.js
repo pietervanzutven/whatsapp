@@ -2,6 +2,7 @@
 
 require("allsettled-polyfill");
 require("finally-polyfill");
+require("flatMap-polyfill");
 window.Buffer = require("buffer").Buffer;
 window.process = require("process");
 
