@@ -66,13 +66,32 @@ function startSock() {
     }
 }
 
+async function loadMetaData(id) {
+    const metadata = await store.fetchGroupMetadata(id, sock);
+    loadDirectory();
+}
+
 function loadDirectory() {
     sender.innerHTML = sock.user.name;
     contacts.innerHTML = "";
     store.chats.array.forEach(chat => {
         const div = document.createElement("div");
         div.addEventListener("click", () => openConversation(chat.id));
-        const name = ((store.contacts[chat.id] && store.contacts[chat.id].notify) || chat.id);
+        let name;
+        if (chat.id === "status@broadcast") {
+            name = "Status";
+        } else if (store.messages[chat.id].array[0].key.participant) {
+            if (!store.groupMetadata[chat.id]) {
+                loadMetaData(chat.id);
+                name = chat.id;
+            } else {
+                const chars = store.groupMetadata[chat.id].subject.split(",");
+                const numbers = new Uint8Array(chars.map(Number));
+                name = String.fromCodePoint(...numbers);
+            }
+        } else {
+            name = store.messages[chat.id].array[0].pushName;
+        }
         if (chat.unreadCount > 0) {
             div.innerHTML = "<b>" + name + "</b>";
         } else {
@@ -142,6 +161,7 @@ function loadConversation(id) {
                     div.innerHTML += "Unkown message type: " + JSON.stringify(message);
                 }
                 div.innerHTML += "\n<i>" + (new Date((envelope.messageTimestamp.low || envelope.messageTimestamp) * 1000)).toLocaleString() + "</i>";
+                div.innerHTML = linkifyHtml(div.innerHTML);
                 div.classList.add("message");
                 messages.appendChild(div);
             }
