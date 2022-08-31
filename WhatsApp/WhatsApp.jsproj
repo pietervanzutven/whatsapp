@@ -270,6 +270,8 @@
     <Content Include="js\node_modules\http-browserify\index.js" />
     <Content Include="js\node_modules\http\index.js" />
     <Content Include="js\node_modules\ieee754\index.js" />
+    <Content Include="js\node_modules\jimp-browserify\index.js" />
+    <Content Include="js\node_modules\jimp\index.js" />
     <Content Include="js\node_modules\libsignal\index.js" />
     <Content Include="js\node_modules\libsignal\src\base_key_type.js" />
     <Content Include="js\node_modules\libsignal\src\chain_type.js" />
