@@ -285,6 +285,8 @@
     <Content Include="js\node_modules\libsignal\src\session_cipher.js" />
     <Content Include="js\node_modules\libsignal\src\session_record.js" />
     <Content Include="js\node_modules\libsignal\src\whispertextprotocol.js" />
+    <Content Include="js\node_modules\linkifyjs\linkify-html.js" />
+    <Content Include="js\node_modules\linkifyjs\linkify.js" />
     <Content Include="js\node_modules\long\index.js" />
     <Content Include="js\node_modules\long\src\long.js" />
     <Content Include="js\node_modules\node-cache\index.js" />
