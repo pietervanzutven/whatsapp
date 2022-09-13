@@ -81,13 +81,13 @@ function loadDirectory() {
         if (chat.id === "status@broadcast") {
             name = "Status";
         } else if (store.messages[chat.id].array[0].key.participant) {
-            if (!store.groupMetadata[chat.id]) {
-                loadMetaData(chat.id);
-                name = chat.id;
-            } else {
+            if (store.groupMetadata[chat.id]) {
                 const chars = store.groupMetadata[chat.id].subject.split(",");
                 const numbers = new Uint8Array(chars.map(Number));
                 name = String.fromCodePoint(...numbers);
+            } else {
+                loadMetaData(chat.id);
+                name = chat.id;
             }
         } else {
             name = store.messages[chat.id].array[0].pushName;
@@ -113,7 +113,15 @@ function openDirectory() {
 const stamp2date = (message) => (new Date((message.messageTimestamp.low || message.messageTimestamp) * 1000)).toLocaleString();
 function loadConversation(id) {
     if (address.value === id) {
-        addressee.innerHTML = store.chats.dict[id].name || store.chats.dict[id].id;
+        if (id === "status@broadcast") {
+            addressee.innerHTML = "Status";
+        } else if (store.messages[id].array[0].key.participant) {
+            const chars = store.groupMetadata[id].subject.split(",");
+            const numbers = new Uint8Array(chars.map(Number));
+            addressee.innerHTML = String.fromCodePoint(...numbers);
+        } else {
+            addressee.innerHTML = store.messages[id].array[0].pushName;
+        }
         messages.innerHTML = "";
 
         let envelopes = store.messages[id].array.slice(-20);
@@ -165,7 +173,7 @@ function loadConversation(id) {
                         div.innerHTML = "<b>" + envelope.pushName + "</b>\n" + div.innerHTML;
                     }
                     div.innerHTML += "\n<i>" + stamp2date(envelope) + "</i>";
-                    envelope.reactions.forEach(reaction => {
+                    envelope.reactions && envelope.reactions.forEach(reaction => {
                         const react = store.messages[id].get(reaction.key.id);
                         div.innerHTML += "\n\n<b>" + react.pushName + "</b>\n" + reaction.text + "\n<i>" + stamp2date(react) + "</i>";
                     });
