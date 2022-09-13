@@ -110,6 +110,7 @@ function openDirectory() {
     conversation.classList.add("hidden");
 }
 
+const stamp2date = (message) => (new Date((message.messageTimestamp.low || message.messageTimestamp) * 1000)).toLocaleString();
 function loadConversation(id) {
     if (address.value === id) {
         addressee.innerHTML = store.chats.dict[id].name || store.chats.dict[id].id;
@@ -123,13 +124,6 @@ function loadConversation(id) {
             const message = envelope.message;
             if (message) {
                 const div = document.createElement("div");
-                if (envelope.key.fromMe) {
-                    div.classList.add("right");
-                    div.innerHTML = "<b>" + sock.user.name + "</b>\n";
-                } else {
-                    div.classList.add("left");
-                    div.innerHTML = "<b>" + envelope.pushName + "</b>\n";
-                }
                 if (message.conversation) {
                     div.innerHTML += message.conversation;
                 } else if (message.extendedTextMessage) {
@@ -157,13 +151,28 @@ function loadConversation(id) {
                     div.innerHTML += content.caption ? "\n" + content.caption : "";
                 } else if (message.audioMessage || message.documentMessage) {
                     div.innerHTML += "Attachment";
+                } else if (message.reactionMessage) {
+                    div.innerHTML = "";
                 } else {
                     div.innerHTML += "Unkown message type: " + JSON.stringify(message);
                 }
-                div.innerHTML += "\n<i>" + (new Date((envelope.messageTimestamp.low || envelope.messageTimestamp) * 1000)).toLocaleString() + "</i>";
-                div.innerHTML = linkifyHtml(div.innerHTML);
-                div.classList.add("message");
-                messages.appendChild(div);
+                if (div.innerHTML !== "") {
+                    if (envelope.key.fromMe) {
+                        div.classList.add("right");
+                        div.innerHTML = "<b>" + sock.user.name + "</b>\n" + div.innerHTML;
+                    } else {
+                        div.classList.add("left");
+                        div.innerHTML = "<b>" + envelope.pushName + "</b>\n" + div.innerHTML;
+                    }
+                    div.innerHTML += "\n<i>" + stamp2date(envelope) + "</i>";
+                    envelope.reactions.forEach(reaction => {
+                        const react = store.messages[id].get(reaction.key.id);
+                        div.innerHTML += "\n\n<b>" + react.pushName + "</b>\n" + reaction.text + "\n<i>" + stamp2date(react) + "</i>";
+                    });
+                    div.innerHTML = linkifyHtml(div.innerHTML);
+                    div.classList.add("message");
+                    messages.appendChild(div);
+                }
             }
             sock.readMessages([envelope.key.id]);
         });
