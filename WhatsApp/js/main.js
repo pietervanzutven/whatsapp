@@ -165,7 +165,7 @@ function loadConversation(id) {
                 div.classList.add("message");
                 messages.appendChild(div);
             }
-            sock.sendReceipt(envelope.key.remoteJid, envelope.key.participant, [envelope.key.id]);
+            sock.readMessages([envelope.key.id]);
         });
         store.chats.dict[id].unreadCount = 0;
     }
