@@ -322,6 +322,7 @@
     <Content Include="js\node_modules\qrcode-terminal\vendor\QRCode\QRUtil.js" />
     <Content Include="js\node_modules\stream-browserify\index.js" />
     <Content Include="js\node_modules\stream\index.js" />
+    <Content Include="js\node_modules\textdecoder-polyfill\encoder.js" />
     <Content Include="js\node_modules\util-browserify\index.js" />
     <Content Include="js\node_modules\util\index.js" />
     <Content Include="js\node_modules\ws\index.js" />

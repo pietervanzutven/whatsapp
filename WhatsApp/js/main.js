@@ -66,14 +66,23 @@ function startSock() {
     }
 }
 
-async function loadMetaData(id) {
-    const metadata = await store.fetchGroupMetadata(id, sock);
+async function loadMetaData(ids) {
+    for (let i = 0; i < ids.length; i++) {
+        await store.fetchGroupMetadata(ids[i], sock);
+    }
     loadDirectory();
+}
+
+function subject2string(subject) {
+    const chars = subject.split(",");
+    const array = new Uint8Array(chars.map(Number));
+    return new TextDecoder('utf8').decode(array);
 }
 
 function loadDirectory() {
     sender.innerHTML = sock.user.name;
     contacts.innerHTML = "";
+    let ids = [];
     store.chats.array.forEach(chat => {
         const div = document.createElement("div");
         div.addEventListener("click", () => openConversation(chat.id));
@@ -82,11 +91,9 @@ function loadDirectory() {
             name = "Status";
         } else if (store.messages[chat.id].array[0].key.participant) {
             if (store.groupMetadata[chat.id]) {
-                const chars = store.groupMetadata[chat.id].subject.split(",");
-                const numbers = new Uint8Array(chars.map(Number));
-                name = String.fromCodePoint(...numbers);
+                name = subject2string(store.groupMetadata[chat.id].subject);
             } else {
-                loadMetaData(chat.id);
+                ids.push(chat.id);
                 name = chat.id;
             }
         } else {
@@ -100,6 +107,7 @@ function loadDirectory() {
         div.classList.add("contact");
         contacts.appendChild(div);
     });
+    ids.length > 0 && loadMetaData(ids);
 }
 
 function openDirectory() {
@@ -116,9 +124,7 @@ function loadConversation(id) {
         if (id === "status@broadcast") {
             addressee.innerHTML = "Status";
         } else if (store.messages[id].array[0].key.participant) {
-            const chars = store.groupMetadata[id].subject.split(",");
-            const numbers = new Uint8Array(chars.map(Number));
-            addressee.innerHTML = String.fromCodePoint(...numbers);
+            addressee.innerHTML = subject2string(store.groupMetadata[id].subject);
         } else {
             addressee.innerHTML = store.messages[id].array[0].pushName;
         }
