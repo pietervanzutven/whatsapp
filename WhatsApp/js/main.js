@@ -229,7 +229,7 @@ async function sendMessage() {
         if (file) {
             let buffer = await Windows.Storage.FileIO.readBufferAsync(file);
             buffer = Buffer.from(new Uint8Array(buffer));
-            sock.sendMessage(address.value, { image: buffer, jpegThumbnail: null }, { logger: P });
+            sock.sendMessage(address.value, { image: buffer }, { logger: P });
         }
     }
 }
