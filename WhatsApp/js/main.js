@@ -136,8 +136,15 @@ function loadConversation(id) {
         });
         envelopes.forEach(envelope => {
             const message = envelope.message;
-            if (message) {
+            if (message && !message.reactionMessage) {
                 const div = document.createElement("div");
+                if (envelope.key.fromMe) {
+                    div.classList.add("right");
+                    div.innerHTML = "<b>" + sock.user.name + "</b>\n";
+                } else {
+                    div.classList.add("left");
+                    div.innerHTML = "<b>" + envelope.pushName + "</b>\n";
+                }
                 if (message.conversation) {
                     div.innerHTML += message.conversation;
                 } else if (message.extendedTextMessage) {
@@ -163,30 +170,24 @@ function loadConversation(id) {
                     }
                     div.appendChild(element);
                     div.innerHTML += content.caption ? "\n" + content.caption : "";
-                } else if (message.audioMessage || message.documentMessage) {
-                    div.innerHTML += "Attachment";
-                } else if (message.reactionMessage) {
-                    div.innerHTML = "";
+                } else if (message.audioMessage) {
+                    div.innerHTML += "Audio";
+                } else if (message.documentMessage) {
+                    div.innerHTML += message.documentMessage.fileName;
+                } else if (message.protocolMessage) {
+                    div.innerHTML += "-";
                 } else {
                     div.innerHTML += "Unkown message type: " + JSON.stringify(message);
                 }
-                if (div.innerHTML !== "") {
-                    if (envelope.key.fromMe) {
-                        div.classList.add("right");
-                        div.innerHTML = "<b>" + sock.user.name + "</b>\n" + div.innerHTML;
-                    } else {
-                        div.classList.add("left");
-                        div.innerHTML = "<b>" + envelope.pushName + "</b>\n" + div.innerHTML;
-                    }
-                    div.innerHTML += "\n<i>" + stamp2date(envelope) + "</i>";
-                    envelope.reactions && envelope.reactions.forEach(reaction => {
-                        const react = store.messages[id].get(reaction.key.id);
-                        div.innerHTML += "\n\n<b>" + react.pushName + "</b>\n" + reaction.text + "\n<i>" + stamp2date(react) + "</i>";
-                    });
-                    div.innerHTML = linkifyHtml(div.innerHTML);
-                    div.classList.add("message");
-                    messages.appendChild(div);
-                }
+                div.innerHTML += "\n<i>" + stamp2date(envelope) + "</i>";
+                envelope.reactions && envelope.reactions.forEach(reaction => {
+                    const react = store.messages[id].get(reaction.key.id);
+                    div.innerHTML += "\n\n<b>" + react.pushName + "</b>\n" + reaction.text + "\n<i>" + stamp2date(react) + "</i>";
+                });
+                div.innerHTML = linkifyHtml(div.innerHTML);
+                message.protocolMessage && (div.innerHTML = "<del>" + div.innerHTML + "</del>");
+                div.classList.add("message");
+                messages.appendChild(div);
             }
             sock.readMessages([envelope.key.id]);
         });
