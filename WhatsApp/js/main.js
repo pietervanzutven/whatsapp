@@ -31,7 +31,6 @@ function startSock() {
         store.bind(sock.ev);
     
         sock.ev.on("connection.update", update => {
-            console.log(update);
             switch (update.connection) {
                 case "close":
                     status.className = "red";
@@ -63,14 +62,18 @@ function startSock() {
                 loadConversation(message.key.remoteJid);
             });
         });
+
+        loadDirectory();
     }
 }
 
 async function loadMetaData(ids) {
-    for (let i = 0; i < ids.length; i++) {
-        await store.fetchGroupMetadata(ids[i], sock);
+    if (ids.length > 0 && sock.ws.readyState === sock.ws.OPEN) {
+        for (let i = 0; i < ids.length; i++) {
+            await store.fetchGroupMetadata(ids[i], sock);
+        }
+        loadDirectory();
     }
-    loadDirectory();
 }
 
 function subject2string(subject) {
@@ -107,7 +110,7 @@ function loadDirectory() {
         div.classList.add("contact");
         contacts.appendChild(div);
     });
-    ids.length > 0 && loadMetaData(ids);
+    loadMetaData(ids);
 }
 
 function openDirectory() {
