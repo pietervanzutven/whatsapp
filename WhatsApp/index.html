@@ -7,98 +7,204 @@
 
     <link rel="stylesheet" href="index.css">
 
-    <script src="js/require.js"></script>
+    <script src="/js/require.js"></script>
 
-    <script src="js/node_modules/@adiwajshing/baileys/lib/index.js"></script>
-    <script src="js/node_modules/@adiwajshing/baileys/lib/Binary/Constants.js"></script>
-    <script src="js/node_modules/@adiwajshing/baileys/lib/Binary/Decoder.js"></script>
-    <script src="js/node_modules/@adiwajshing/baileys/lib/Binary/Encoder.js"></script>
-    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/0.Base.js"></script>
-    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/1.Validation.js"></script>
-    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/3.Connect.js"></script>
-    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/4.Events.js"></script>
-    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/5.User.js"></script>
-    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/6.MessagesSend.js"></script>
-    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/7.MessagesExtra.js"></script>
-    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/8.Groups.js"></script>
-    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/Constants.js"></script>
-    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/index.js"></script>
-    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/Mutex.js"></script>
-    <script src="js/node_modules/@adiwajshing/baileys/lib/WAConnection/Utils.js"></script>
-    <script src="js/node_modules/@adiwajshing/baileys/WAMessage/WAMessage.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/WAProto/index.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/WASignalGroup/GroupProtocol.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/WASignalGroup/ciphertext_message.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/WASignalGroup/group_cipher.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/WASignalGroup/group_session_builder.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/WASignalGroup/index.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/WASignalGroup/keyhelper.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/WASignalGroup/protobufs.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/WASignalGroup/sender_chain_key.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/WASignalGroup/sender_key_distribution_message.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/WASignalGroup/sender_key_message.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/WASignalGroup/sender_key_name.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/WASignalGroup/sender_key_record.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/WASignalGroup/sender_key_state.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/WASignalGroup/sender_message_key.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Defaults/baileys-version.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Defaults/index.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/LegacySocket/auth.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/LegacySocket/business.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/LegacySocket/chats.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/LegacySocket/groups.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/LegacySocket/index.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/LegacySocket/messages.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/LegacySocket/socket.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Socket/business.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Socket/chats.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Socket/groups.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Socket/index.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Socket/messages-recv.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Socket/messages-send.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Socket/socket.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Store/index.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Store/make-in-memory-store.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Store/make-ordered-dictionary.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Types/Auth.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Types/Call.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Types/Chat.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Types/Contact.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Types/Events.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Types/GroupMetadata.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Types/Legacy.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Types/Message.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Types/Product.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Types/Socket.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Types/State.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Types/index.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/auth-utils.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/baileys-event-stream.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/business.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/chat-utils.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/crypto.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/decode-wa-message.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/event-buffer.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/generics.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/history.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/index.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/legacy-msgs.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/link-preview.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/logger.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/lt-hash.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/make-mutex.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/messages-media.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/messages.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/noise-handler.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/process-message.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/signal.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/use-multi-file-auth-state.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/use-single-file-auth-state.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/Utils/validate-connection.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/WABinary/Legacy/constants.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/WABinary/Legacy/index.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/WABinary/constants.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/WABinary/decode.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/WABinary/encode.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/WABinary/generic-utils.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/WABinary/index.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/WABinary/jid-utils.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/WABinary/types.js"></script>
+    <script src="/js/node_modules/@adiwajshing/baileys/lib/index.js"></script>
+    <script src="/js/node_modules/@adiwajshing/keyed-db/index.js"></script>
+    <script src="/js/node_modules/@adiwajshing/keyed-db/lib/BinarySearch.js"></script>
+    <script src="/js/node_modules/@adiwajshing/keyed-db/lib/KeyedDB.js"></script>
+    <script src="/js/node_modules/@hapi/boom/index.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/applyToDefaults.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/assert.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/bench.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/block.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/clone.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/contain.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/deepEqual.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/error.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/escapeHeaderAttribute.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/escapeHtml.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/escapeJson.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/escapeRegex.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/flatten.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/ignore.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/index.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/intersect.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/isPromise.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/merge.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/once.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/reach.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/reachTemplate.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/stringify.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/types.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/utils.js"></script>
+    <script src="/js/node_modules/@hapi/hoek/wait.js"></script>
+    <script src="/js/node_modules/@protobufjs/aspromise/index.js"></script>
+    <script src="/js/node_modules/@protobufjs/base64/index.js"></script>
+    <script src="/js/node_modules/@protobufjs/eventemitter/index.js"></script>
+    <script src="/js/node_modules/@protobufjs/float/index.js"></script>
+    <script src="/js/node_modules/@protobufjs/inquire/index.js"></script>
+    <script src="/js/node_modules/@protobufjs/pool/index.js"></script>
+    <script src="/js/node_modules/@protobufjs/utf8/index.js"></script>
+    <script src="/js/node_modules/allsettled-polyfill/index.js"></script>
+    <script src="/js/node_modules/assert/index.js"></script>
+    <script src="/js/node_modules/assert-browserify/index.js"></script>
+    <script src="/js/node_modules/axios/index.js"></script>
+    <script src="/js/node_modules/axios-browserify/index.js"></script>
+    <script src="/js/node_modules/base64-js/index.js"></script>
+    <script src="/js/node_modules/buffer/index.js"></script>
+    <script src="/js/node_modules/clone/index.js"></script>
+    <script src="/js/node_modules/crypto/index.js"></script>
+    <script src="/js/node_modules/crypto-browserify/index.js"></script>
+    <script src="/js/node_modules/curve25519-js/index.js"></script>
+    <script src="/js/node_modules/events/index.js"></script>
+    <script src="/js/node_modules/finally-polyfill/index.js"></script>
+    <script src="/js/node_modules/flatMap-browserify/index.js"></script>
+    <script src="/js/node_modules/flatMap-polyfill/index.js"></script>
+    <script src="/js/node_modules/fs/index.js"></script>
+    <script src="/js/node_modules/futoin-hkdf/index.js"></script>
+    <script src="/js/node_modules/got/index.js"></script>
+    <script src="/js/node_modules/http/index.js"></script>
+    <script src="/js/node_modules/http-browserify/index.js"></script>
+    <script src="/js/node_modules/ieee754/index.js"></script>
+    <script src="/js/node_modules/jimp/index.js"></script>
+    <script src="/js/node_modules/jimp-browserify/index.js"></script>
+    <script src="/js/node_modules/libsignal/index.js"></script>
+    <script src="/js/node_modules/libsignal/src/base_key_type.js"></script>
+    <script src="/js/node_modules/libsignal/src/chain_type.js"></script>
+    <script src="/js/node_modules/libsignal/src/crypto.js"></script>
+    <script src="/js/node_modules/libsignal/src/curve.js"></script>
+    <script src="/js/node_modules/libsignal/src/errors.js"></script>
+    <script src="/js/node_modules/libsignal/src/keyhelper.js"></script>
+    <script src="/js/node_modules/libsignal/src/numeric_fingerprint.js"></script>
+    <script src="/js/node_modules/libsignal/src/protobufs.js"></script>
+    <script src="/js/node_modules/libsignal/src/protocol_address.js"></script>
+    <script src="/js/node_modules/libsignal/src/queue_job.js"></script>
+    <script src="/js/node_modules/libsignal/src/session_builder.js"></script>
+    <script src="/js/node_modules/libsignal/src/session_cipher.js"></script>
+    <script src="/js/node_modules/libsignal/src/session_record.js"></script>
+    <script src="/js/node_modules/libsignal/src/whispertextprotocol.js"></script>
+    <script src="/js/node_modules/linkifyjs/linkify.js"></script>
+    <script src="/js/node_modules/linkifyjs/linkify-html.js"></script>
+    <script src="/js/node_modules/long/index.js"></script>
+    <script src="/js/node_modules/long/src/long.js"></script>
+    <script src="/js/node_modules/node-cache/index.js"></script>
+    <script src="/js/node_modules/os/index.js"></script>
+    <script src="/js/node_modules/os-browserify/index.js"></script>
+    <script src="/js/node_modules/path/index.js"></script>
+    <script src="/js/node_modules/path-browserify/index.js"></script>
+    <script src="/js/node_modules/pino/index.js"></script>
+    <script src="/js/node_modules/process/index.js"></script>
+    <script src="/js/node_modules/protobufjs/minimal.js"></script>
+    <script src="/js/node_modules/protobufjs/src/index-minimal.js"></script>
+    <script src="/js/node_modules/protobufjs/src/reader.js"></script>
+    <script src="/js/node_modules/protobufjs/src/reader_buffer.js"></script>
+    <script src="/js/node_modules/protobufjs/src/roots.js"></script>
+    <script src="/js/node_modules/protobufjs/src/rpc/service.js"></script>
+    <script src="/js/node_modules/protobufjs/src/rpc.js"></script>
+    <script src="/js/node_modules/protobufjs/src/util/longbits.js"></script>
+    <script src="/js/node_modules/protobufjs/src/util/minimal.js"></script>
+    <script src="/js/node_modules/protobufjs/src/writer.js"></script>
+    <script src="/js/node_modules/protobufjs/src/writer_buffer.js"></script>
+    <script src="/js/node_modules/qrcode-terminal/lib/main.js"></script>
+    <script src="/js/node_modules/qrcode-terminal/vendor/QRCode/QR8bitByte.js"></script>
+    <script src="/js/node_modules/qrcode-terminal/vendor/QRCode/QRBitBuffer.js"></script>
+    <script src="/js/node_modules/qrcode-terminal/vendor/QRCode/QRErrorCorrectLevel.js"></script>
+    <script src="/js/node_modules/qrcode-terminal/vendor/QRCode/QRMaskPattern.js"></script>
+    <script src="/js/node_modules/qrcode-terminal/vendor/QRCode/QRMath.js"></script>
+    <script src="/js/node_modules/qrcode-terminal/vendor/QRCode/QRMode.js"></script>
+    <script src="/js/node_modules/qrcode-terminal/vendor/QRCode/QRPolynomial.js"></script>
+    <script src="/js/node_modules/qrcode-terminal/vendor/QRCode/QRRSBlock.js"></script>
+    <script src="/js/node_modules/qrcode-terminal/vendor/QRCode/QRUtil.js"></script>
+    <script src="/js/node_modules/qrcode-terminal/vendor/QRCode/index.js"></script>
+    <script src="/js/node_modules/stream/index.js"></script>
+    <script src="/js/node_modules/stream-browserify/index.js"></script>
+    <script src="/js/node_modules/textdecoder-polyfill/encoder.js"></script>
+    <script src="/js/node_modules/util/index.js"></script>
+    <script src="/js/node_modules/util-browserify/index.js"></script>
+    <script src="/js/node_modules/ws/index.js"></script>
+    <script src="/js/node_modules/zlib/index.js"></script>
+    <script src="/js/node_modules/zlib-browserify/index.js"></script>
 
-    <script src="js/node_modules/@adiwajshing/keyed-db/lib/BinarySearch.js"></script>
-    <script src="js/node_modules/@adiwajshing/keyed-db/lib/KeyedDB.js"></script>
-
-    <script src="js/node_modules/@protobufjs/aspromise/index.js"></script>
-    <script src="js/node_modules/@protobufjs/base64/index.js"></script>
-    <script src="js/node_modules/@protobufjs/eventemitter/index.js"></script>
-    <script src="js/node_modules/@protobufjs/float/index.js"></script>
-    <script src="js/node_modules/@protobufjs/inquire/index.js"></script>
-    <script src="js/node_modules/@protobufjs/pool/index.js"></script>
-    <script src="js/node_modules/@protobufjs/utf8/index.js"></script>
-
-    <script src="js/node_modules/base64-js/index.js"></script>
-
-    <script src="js/node_modules/buffer/index.js"></script>
-
-    <script src="js/node_modules/crypto-browserify/index.js"></script>
-    <script src="js/node_modules/crypto/index.js"></script>
-
-    <script src="js/node_modules/curve25519-js/lib/index.js"></script>
-
-    <script src="js/node_modules/events/index.js"></script>
-
-    <script src="js/node_modules/finally-polyfill/index.js"></script>
-
-    <script src="js/node_modules/futoin-hkdf/hkdf.js"></script>
-
-    <script src="js/node_modules/got/index.js"></script>
-
-    <script src="js/node_modules/http-browserify/index.js"></script>
-    <script src="js/node_modules/http/index.js"></script>
-
-    <script src="js/node_modules/ieee754/index.js"></script>
-
-    <script src="js/node_modules/long/index.js"></script>
-    <script src="js/node_modules/long/src/long.js"></script>
-
-    <script src="js/node_modules/os-browserify/index.js"></script>
-    <script src="js/node_modules/os/index.js"></script>
-
-    <script src="js/node_modules/path-browserify/index.js"></script>
-    <script src="js/node_modules/path/index.js"></script>
-
-    <script src="js/node_modules/protobufjs/minimal.js"></script>
-    <script src="js/node_modules/protobufjs/src/index-minimal.js"></script>
-    <script src="js/node_modules/protobufjs/src/reader.js"></script>
-    <script src="js/node_modules/protobufjs/src/reader_buffer.js"></script>
-    <script src="js/node_modules/protobufjs/src/roots.js"></script>
-    <script src="js/node_modules/protobufjs/src/rpc.js"></script>
-    <script src="js/node_modules/protobufjs/src/rpc/service.js"></script>
-    <script src="js/node_modules/protobufjs/src/util/longbits.js"></script>
-    <script src="js/node_modules/protobufjs/src/util/minimal.js"></script>
-    <script src="js/node_modules/protobufjs/src/writer.js"></script>
-    <script src="js/node_modules/protobufjs/src/writer_buffer.js"></script>
-
-    <script src="js/node_modules/qrcode-terminal/lib/main.js"></script>
-    <script src="js/node_modules/qrcode-terminal/vendor/QRCode/index.js"></script>
-    <script src="js/node_modules/qrcode-terminal/vendor/QRCode/QR8bitByte.js"></script>
-    <script src="js/node_modules/qrcode-terminal/vendor/QRCode/QRBitBuffer.js"></script>
-    <script src="js/node_modules/qrcode-terminal/vendor/QRCode/QRErrorCorrectLevel.js"></script>
-    <script src="js/node_modules/qrcode-terminal/vendor/QRCode/QRMaskPattern.js"></script>
-    <script src="js/node_modules/qrcode-terminal/vendor/QRCode/QRMath.js"></script>
-    <script src="js/node_modules/qrcode-terminal/vendor/QRCode/QRMode.js"></script>
-    <script src="js/node_modules/qrcode-terminal/vendor/QRCode/QRPolynomial.js"></script>
-    <script src="js/node_modules/qrcode-terminal/vendor/QRCode/QRRSBlock.js"></script>
-    <script src="js/node_modules/qrcode-terminal/vendor/QRCode/QRUtil.js"></script>
-
-    <script src="js/node_modules/stream-browserify/index.js"></script>
-    <script src="js/node_modules/stream/index.js"></script>
-
-    <script src="js/node_modules/ws/index.js"></script>
-
-    <script src="js/main.js"></script>
+    <script src="/js/main.js"></script>
 </head>
 
 <body>
@@ -106,7 +212,6 @@
     <div id="directory" class="fill">
         <div class="header">
             <div id="sender">Loading...</div>
-            <div id="status" class="red"></div>
         </div>
         <div id="contacts" class="contacts"></div>
     </div>
@@ -119,6 +224,7 @@
             <input type="button" value="send" id="send">
         </div>
     </div>
+    <div id="status" class="red"></div>
 </body>
 
 </html>

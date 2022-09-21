@@ -1,67 +1,116 @@
 ﻿"use strict";
 
+require("allsettled-polyfill");
 require("finally-polyfill");
-const { MessageType, WAConnection } = require("@adiwajshing/baileys/lib");
-const QR = require("qrcode-terminal/lib/main");
+require("flatMap-polyfill");
 window.Buffer = require("buffer").Buffer;
+window.process = require("process");
 
-async function connectToWhatsApp(conn) {
-    const authInfo = Windows.Storage.ApplicationData.current.localSettings.values["authInfo"];
+const baileys = require("@adiwajshing/baileys/lib");
+const QR = require("qrcode-terminal/lib/main");
+const fs = require("fs");
+const P  = require("pino").default();
 
-    conn.on("qr", qr => {
-        QR.generate(qr, { small: true }, qrcode => pair.innerHTML = qrcode);
-        pair.classList.remove("hidden");
-        directory.classList.add("hidden");
-    });
+async function connectToWhatsApp() {
+    await fs.prepareFileAsync('auth_info_multi.json');
+    const authState = baileys.useSingleFileAuthState('auth_info_multi.json');
+    state = authState.state;
+    saveState = authState.saveState;
 
-    conn.on("close", () => {
-        status.className = "red";
-    });
+    await fs.prepareFileAsync('baileys_store_multi.json');
+    store = baileys.makeInMemoryStore({ });
+    store.readFromFile('baileys_store_multi.json');
+    setInterval(() => store.writeToFile('baileys_store_multi.json'), 10000);
 
-    conn.on("connecting", () => {
-        status.className = "orange";
-    });
+    setInterval(startSock, 1000);
+}
 
-    conn.on("open", () => {
-        status.className = "green";
-        const authInfo = conn.base64EncodedAuthInfo();
-        Windows.Storage.ApplicationData.current.localSettings.values["authInfo"] = JSON.stringify(authInfo);
-    });
+function startSock() {
+    if (!sock || sock.ws.readyState === sock.ws.CLOSED) {
+        sock = baileys.default({ auth: state });
+        store.bind(sock.ev);
+    
+        sock.ev.on("connection.update", update => {
+            switch (update.connection) {
+                case "close":
+                    status.className = "red";
+                    break;
+                case "connecting":
+                    status.className = "orange";
+                    break;
+                case "open":
+                    status.className = "green";
+                    loadDirectory();
+                    break;
+            }
+            if (update.qr) {
+                QR.generate(update.qr, { small: true }, qrcode => pair.innerHTML = qrcode);
+                pair.classList.remove("hidden");
+                directory.classList.add("hidden");
+            }
+        });
 
-    conn.on("contacts-received", loadDirectory);
+        sock.ev.on("creds.update", saveState);
+        sock.ev.on("chats.upsert", () => {
+            loadDirectory();
+        });
+        sock.ev.on("chats.update", chat => {
+            loadDirectory();
+        });
+        sock.ev.on("messages.upsert", upsert => {
+            upsert.messages.forEach(message => {
+                loadConversation(message.key.remoteJid);
+            });
+        });
 
-    conn.on("chat-update", chatUpdate => {
-        if (chatUpdate.hasNewMessage) {
-            loadConversation(chatUpdate.jid);
-        }
-    });
-
-    if (authInfo) {
-        conn.loadAuthInfo(JSON.parse(authInfo));
-    }
-
-    try {
-        await conn.connect();
-    } catch (error) {
-        conn.clearAuthInfo();
-        await conn.connect();
+        loadDirectory();
     }
 }
 
+async function loadMetaData(ids) {
+    if (ids.length > 0 && sock.ws.readyState === sock.ws.OPEN) {
+        for (let i = 0; i < ids.length; i++) {
+            await store.fetchGroupMetadata(ids[i], sock);
+        }
+        loadDirectory();
+    }
+}
+
+function subject2string(subject) {
+    const chars = subject.split(",");
+    const array = new Uint8Array(chars.map(Number));
+    return new TextDecoder('utf8').decode(array);
+}
+
 function loadDirectory() {
-    sender.innerHTML = conn.user.name;
+    sender.innerHTML = sock.user.name;
     contacts.innerHTML = "";
-    conn.chats.array.forEach(chat => {
+    let ids = [];
+    store.chats.array.forEach(chat => {
         const div = document.createElement("div");
-        div.addEventListener("click", () => openConversation(chat.jid));
-        if (chat.count > 0) {
-            div.innerHTML = "<b>" + chat.name + "</b>";
+        div.addEventListener("click", () => openConversation(chat.id));
+        let name;
+        if (chat.id === "status@broadcast") {
+            name = "Status";
+        } else if (store.messages[chat.id].array[0].key.participant) {
+            if (store.groupMetadata[chat.id]) {
+                name = subject2string(store.groupMetadata[chat.id].subject);
+            } else {
+                ids.push(chat.id);
+                name = chat.id;
+            }
         } else {
-            div.innerHTML = chat.name;
+            name = store.messages[chat.id].array[0].pushName;
+        }
+        if (chat.unreadCount > 0) {
+            div.innerHTML = "<b>" + name + "</b>";
+        } else {
+            div.innerHTML = name;
         }
         div.classList.add("contact");
         contacts.appendChild(div);
     });
+    loadMetaData(ids);
 }
 
 function openDirectory() {
@@ -72,31 +121,32 @@ function openDirectory() {
     conversation.classList.add("hidden");
 }
 
-function loadConversation(jid) {
-    if (address.value === jid) {
-        const chat = conn.chats.dict[jid];
-        addressee.innerHTML = chat.name;
+const stamp2date = (message) => (new Date((message.messageTimestamp.low || message.messageTimestamp) * 1000)).toLocaleString();
+function loadConversation(id) {
+    if (address.value === id) {
+        if (id === "status@broadcast") {
+            addressee.innerHTML = "Status";
+        } else if (store.messages[id].array[0].key.participant) {
+            addressee.innerHTML = subject2string(store.groupMetadata[id].subject);
+        } else {
+            addressee.innerHTML = store.messages[id].array[0].pushName;
+        }
         messages.innerHTML = "";
 
-        let envelopes = chat.messages.array;
-        if (envelopes.length < 2) {
-            conn.loadMessages(jid, 20).then(() => loadConversation(jid));
-        }
-        
+        let envelopes = store.messages[id].array.slice(-20);
+        envelopes = envelopes.sort((envelope1, envelope2) => {
+            return (envelope1.messageTimestamp.low || envelope1.messageTimestamp) - (envelope2.messageTimestamp.low || envelope2.messageTimestamp);
+        });
         envelopes.forEach(envelope => {
             const message = envelope.message;
-            if (message) {
+            if (message && !message.reactionMessage) {
                 const div = document.createElement("div");
                 if (envelope.key.fromMe) {
                     div.classList.add("right");
-                    div.innerHTML = "<b>" + conn.user.name + "</b>\n";
+                    div.innerHTML = "<b>" + sock.user.name + "</b>\n";
                 } else {
                     div.classList.add("left");
-                    if (envelope.key.participant) {
-                        div.innerHTML = "<b>" + conn.contacts[envelope.key.participant].name + "</b>\n";
-                    } else {
-                        div.innerHTML = "<b>" + conn.contacts[envelope.key.remoteJid].name + "</b>\n";
-                    }
+                    div.innerHTML = "<b>" + envelope.pushName + "</b>\n";
                 }
                 if (message.conversation) {
                     div.innerHTML += message.conversation;
@@ -104,33 +154,54 @@ function loadConversation(jid) {
                     div.innerHTML += message.extendedTextMessage.text;
                 } else if (message.contactMessage) {
                     div.innerHTML += message.contactMessage.displayName + ": " + message.contactMessage.vcard;
-                } else if (message.imageMessage || message.videoMessage ) {
+                } else if (message.imageMessage || message.videoMessage) {
                     const content = message.imageMessage || message.videoMessage;
-                    const img = document.createElement("img");
-                    img.src = URL.createObjectURL(new Blob([content.jpegThumbnail], { type: 'image/png' }));
-                    img.id = envelope.key.id;
-                    div.appendChild(img);
-                    div.addEventListener("click", () => loadImage(envelope));
+                    let element;
+                    if (content.directPath.includes("ms-appdata")) {
+                        element = message.imageMessage ? document.createElement("img") : document.createElement("video");
+                        ("controls" in element) && (element.controls = true);
+                        element.src = content.directPath;
+                        element.style.width = "100%";
+                    } else {
+                        element = document.createElement("img");
+                        element.src = URL.createObjectURL(new Blob([content.jpegThumbnail], { type: "image/png" }));
+                        element.id = envelope.key.id;
+                        div.addEventListener("click", async () => {
+                            await loadAttachment(content);
+                            loadConversation(id);
+                        });
+                    }
+                    div.appendChild(element);
                     div.innerHTML += content.caption ? "\n" + content.caption : "";
-                } else if (message.audioMessage || message.documentMessage) {
-                    div.innerHTML += "Attachment";
+                } else if (message.audioMessage) {
+                    div.innerHTML += "Audio";
+                } else if (message.documentMessage) {
+                    div.innerHTML += message.documentMessage.fileName;
+                } else if (message.protocolMessage) {
+                    div.innerHTML += "-";
                 } else {
-                    div.innerHTML += "Unkown message type!"
+                    div.innerHTML += "Unkown message type: " + JSON.stringify(message);
                 }
-                div.innerHTML += "\n<i>" + (new Date(envelope.messageTimestamp.low * 1000)).toLocaleString() + "</i";
+                div.innerHTML += "\n<i>" + stamp2date(envelope) + "</i>";
+                envelope.reactions && envelope.reactions.forEach(reaction => {
+                    const react = store.messages[id].get(reaction.key.id);
+                    div.innerHTML += "\n\n<b>" + react.pushName + "</b>\n" + reaction.text + "\n<i>" + stamp2date(react) + "</i>";
+                });
+                div.innerHTML = linkifyHtml(div.innerHTML);
+                message.protocolMessage && (div.innerHTML = "<del>" + div.innerHTML + "</del>");
                 div.classList.add("message");
                 messages.appendChild(div);
             }
+            sock.readMessages([envelope.key.id]);
         });
-        messages.scrollTop = messages.scrollHeight
-        conn.chatRead(jid);
+        store.chats.dict[id].unreadCount = 0;
     }
 }
 
-function openConversation(jid) {
-    address.value = jid;
+function openConversation(id) {
+    address.value = id;
 
-    loadConversation(jid);
+    loadConversation(id);
 
     Windows.UI.Core.SystemNavigationManager.getForCurrentView().appViewBackButtonVisibility = Windows.UI.Core.AppViewBackButtonVisibility.visible;
     Windows.UI.Core.SystemNavigationManager.getForCurrentView().onbackrequested = event => {
@@ -142,29 +213,51 @@ function openConversation(jid) {
 
     directory.classList.add("hidden");
     conversation.classList.remove("hidden");
+
+    setTimeout(() => messages.scrollTop = messages.scrollHeight, 10);
 }
 
-function sendMessage() {
+async function sendMessage() {
     if (letter.value) {
-        conn.sendMessage(address.value, letter.value, MessageType.text);
+        sock.sendMessage(address.value, { text: letter.value }, { logger: P });
         letter.value = "";
+    } else {
+        const picker = Windows.Storage.Pickers.FileOpenPicker();
+        picker.suggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.picturesLibrary;
+        picker.fileTypeFilter.append(".jpg");
+        picker.fileTypeFilter.append(".jpeg");
+        picker.fileTypeFilter.append(".png");
+
+        const file = await picker.pickSingleFileAsync();
+        if (file) {
+            let buffer = await Windows.Storage.FileIO.readBufferAsync(file);
+            buffer = Buffer.from(new Uint8Array(buffer));
+            sock.sendMessage(address.value, { image: buffer }, { logger: P });
+        }
     }
 }
 
-async function loadImage(envelope) {
-    const buffer = await conn.downloadMediaMessage(envelope);
-    const img = document.getElementById(envelope.key.id);
-    img.src = URL.createObjectURL(new Blob([Uint8Array.from(buffer)], { type: 'image/png' }));
-    img.style.width = "100%";
+async function loadAttachment(content) {
+    const type = content.mimetype.split('/');
+    const stream = await baileys.downloadContentFromMessage(content, type[0]);
+    let buffer = Buffer.from([]);
+    let chunk;
+    while (null !== (chunk = stream.read())) {
+        buffer = Buffer.concat([buffer, chunk]);
+    }
+
+    const fileName = Date.now().toString() + '.' + type[1];
+    const file = await Windows.Storage.ApplicationData.current.localFolder.createFileAsync(fileName,Windows.Storage.CreationCollisionOption.replaceExisting);
+    await Windows.Storage.FileIO.writeBytesAsync(file, buffer);
+
+    content.directPath = 'ms-appdata:///local/' + fileName;
 }
 
-let conn;
+let sock, state, saveState, store;
 let pair;
 let directory, sender, status, contacts;
 let conversation, addressee, messages, letter, address, send;
 window.onload = () => {
-    conn = new WAConnection();
-
     pair = document.getElementById("pair");
 
     directory = document.getElementById("directory");
@@ -179,7 +272,8 @@ window.onload = () => {
     address = document.getElementById("address");
     send = document.getElementById("send");
 
-    connectToWhatsApp(conn);
+    connectToWhatsApp();
 
     send.addEventListener("click", sendMessage);
+    status.addEventListener("click", startSock);
 }

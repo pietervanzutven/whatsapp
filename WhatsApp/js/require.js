@@ -11,10 +11,10 @@
             const path = stack.substring(start, end);
             const parts = path.split('/');
             parts.pop();
-            const uri = Windows.Foundation.Uri(parts.join('/') + '/' + input);
+            const uri = Windows.Foundation.Uri(parts.join('/') + '/' + input.replace('.js', ''));
             script = uri.absoluteUri.toLowerCase();
         } else {
-            script = ('ms-appx://whatsapp/js/node_modules/' + input).toLowerCase();
+            script = ('ms-appx://whatsapp/js/node_modules/' + input.replace('.js', '')).toLowerCase();
         }
 
         if (require.modules[script]) {
@@ -26,7 +26,7 @@
             return module.exports;
         } else if (require.scripts[script + '/index']) {
             const module = { exports: {} };
-            require.modules[script + '/index'] = module;
+            require.modules[script] = module;
             require.scripts[script + '/index'](module.exports, module);
             return module.exports;
         } else {
