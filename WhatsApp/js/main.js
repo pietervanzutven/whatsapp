@@ -247,7 +247,20 @@ async function sendMessage() {
 
         const file = await picker.pickSingleFileAsync();
         if (file) {
-            let buffer = await Windows.Storage.FileIO.readBufferAsync(file);
+            const stream = await file.openAsync(Windows.Storage.FileAccessMode.readWrite);
+            const decoder = await Windows.Graphics.Imaging.BitmapDecoder.createAsync(stream);
+            const widthRatio = 2048 / decoder.pixelWidth;
+            const heightRatio = 2048 / decoder.pixelHeight;
+            const ratio = Math.min(widthRatio, heightRatio);
+
+            const memory = new Windows.Storage.Streams.InMemoryRandomAccessStream;
+            const encoder = await Windows.Graphics.Imaging.BitmapEncoder.createForTranscodingAsync(memory, decoder);
+            encoder.bitmapTransform.scaledWidth = Math.floor(ratio * decoder.pixelWidth);
+            encoder.bitmapTransform.scaledHeight = Math.floor(ratio * decoder.pixelHeight);
+            await encoder.flushAsync();
+            const buffer = Windows.Storage.Streams.Buffer(memory.size);
+            await memory.readAsync(buffer, memory.size, Windows.Storage.Streams.InputStreamOptions.none);
+
             buffer = Buffer.from(new Uint8Array(buffer));
             sock.sendMessage(address.value, { image: buffer }, { logger: P });
         }
