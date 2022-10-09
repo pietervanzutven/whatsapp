@@ -22,6 +22,18 @@ async function connectToWhatsApp() {
     store.readFromFile('baileys_store_multi.json');
     setInterval(() => store.writeToFile('baileys_store_multi.json'), 10000);
 
+    const manager = await Windows.ApplicationModel.Contacts.ContactManager.requestStoreAsync();
+    const contacts = await manager.findContactsAsync();
+    let contact = contacts.first();
+    while (contact.hasCurrent) {
+        let phone = contact.current.phones.first();
+        while (phone.hasCurrent) {
+            store.contacts[phone.current.number.replace('+', '').replace(/ /g, '') + "@s.whatsapp.net"] = contact.current.displayName;
+            phone.moveNext();
+        }
+        contact.moveNext();
+    }
+
     setInterval(startSock, 1000);
 }
 
@@ -100,7 +112,12 @@ function loadDirectory() {
                 name = chat.id;
             }
         } else {
-            name = store.messages[chat.id].array[0].pushName;
+            if (store.contacts[chat.id]) {
+                name = store.contacts[chat.id];
+            } else {
+                const message = store.messages[chat.id].array.find(message => !message.key.fromMe);
+                name = (message && message.pushName) || chat.id;
+            }
         }
         if (chat.unreadCount > 0) {
             div.innerHTML = "<b>" + name + "</b>";
@@ -129,7 +146,7 @@ function loadConversation(id) {
         } else if (store.messages[id].array[0].key.participant) {
             addressee.innerHTML = subject2string(store.groupMetadata[id].subject);
         } else {
-            addressee.innerHTML = store.messages[id].array[0].pushName;
+            addressee.innerHTML = store.contacts[id] || store.messages[id].array[0].pushName;
         }
         messages.innerHTML = "";
 
@@ -146,7 +163,7 @@ function loadConversation(id) {
                     div.innerHTML = "<b>" + sock.user.name + "</b>\n";
                 } else {
                     div.classList.add("left");
-                    div.innerHTML = "<b>" + envelope.pushName + "</b>\n";
+                    div.innerHTML = "<b>" + (store.contacts[envelope.key.participant || envelope.key.remoteJid] || envelope.pushName) + "</b>\n";
                 }
                 if (message.conversation) {
                     div.innerHTML += message.conversation;
