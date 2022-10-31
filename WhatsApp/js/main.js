@@ -272,11 +272,11 @@ async function sendMessage() {
             encoder.bitmapTransform.scaledWidth = Math.floor(ratio * decoder.pixelWidth);
             encoder.bitmapTransform.scaledHeight = Math.floor(ratio * decoder.pixelHeight);
             await encoder.flushAsync();
-            const buffer = Windows.Storage.Streams.Buffer(memory.size);
+            let buffer = Windows.Storage.Streams.Buffer(memory.size);
             await memory.readAsync(buffer, memory.size, Windows.Storage.Streams.InputStreamOptions.none);
 
             buffer = Buffer.from(new Uint8Array(buffer));
-            sock.sendMessage(address.value, { image: buffer }, { logger: P });
+            sock.sendMessage(address.value, { image: buffer, jpegThumbnail: null }, { logger: P });
         }
     }
 }
