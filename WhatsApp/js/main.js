@@ -28,7 +28,7 @@ async function connectToWhatsApp() {
     while (contact.hasCurrent) {
         let phone = contact.current.phones.first();
         while (phone.hasCurrent) {
-            store.contacts[phone.current.number.replace('+', '').replace(/ /g, '') + "@s.whatsapp.net"] = contact.current.displayName;
+            store.contacts[phone.current.number.replace('+', '').replace(/ /g, '').replace(/-/g, '') + "@s.whatsapp.net"] = contact.current.displayName;
             phone.moveNext();
         }
         contact.moveNext();
@@ -155,16 +155,20 @@ function loadConversation(id) {
             return (envelope1.messageTimestamp.low || envelope1.messageTimestamp) - (envelope2.messageTimestamp.low || envelope2.messageTimestamp);
         });
         envelopes.forEach(envelope => {
+            const div = document.createElement("div");
+
+            if (envelope.key.fromMe) {
+                div.classList.add("right");
+                div.innerHTML = "<b>" + sock.user.name + "</b>\n";
+            } else {
+                div.classList.add("left");
+                div.innerHTML = "<b>" + (store.contacts[envelope.key.participant || envelope.key.remoteJid] || envelope.pushName) + "</b>\n";
+            }
+
             const message = envelope.message;
-            if (message && !message.reactionMessage) {
-                const div = document.createElement("div");
-                if (envelope.key.fromMe) {
-                    div.classList.add("right");
-                    div.innerHTML = "<b>" + sock.user.name + "</b>\n";
-                } else {
-                    div.classList.add("left");
-                    div.innerHTML = "<b>" + (store.contacts[envelope.key.participant || envelope.key.remoteJid] || envelope.pushName) + "</b>\n";
-                }
+            if (!message) {
+                div.innerHTML += envelope.messageStubParameters[0];
+            } else if (!message.reactionMessage) {
                 if (message.conversation) {
                     div.innerHTML += message.conversation;
                 } else if (message.extendedTextMessage) {
@@ -199,16 +203,26 @@ function loadConversation(id) {
                 } else {
                     div.innerHTML += "Unkown message type: " + JSON.stringify(message);
                 }
-                div.innerHTML += "\n<i>" + stamp2date(envelope) + "</i>";
-                envelope.reactions && envelope.reactions.forEach(reaction => {
+            }
+
+            div.innerHTML += "\n<i>" + stamp2date(envelope) + "</i>";
+
+            if (envelope.reactions) {
+                envelope.reactions.forEach(reaction => {
                     const react = store.messages[id].get(reaction.key.id);
                     div.innerHTML += "\n\n<b>" + react.pushName + "</b>\n" + reaction.text + "\n<i>" + stamp2date(react) + "</i>";
                 });
-                div.innerHTML = linkifyHtml(div.innerHTML);
-                message.protocolMessage && (div.innerHTML = "<del>" + div.innerHTML + "</del>");
-                div.classList.add("message");
-                messages.appendChild(div);
             }
+
+            div.innerHTML = linkifyHtml(div.innerHTML);
+
+            if (message && message.protocolMessage) {
+                div.innerHTML = "<del>" + div.innerHTML + "</del>";
+            }
+            
+            div.classList.add("message");
+            messages.appendChild(div);
+
             sock.readMessages([envelope.key.id]);
         });
         store.chats.dict[id].unreadCount = 0;
