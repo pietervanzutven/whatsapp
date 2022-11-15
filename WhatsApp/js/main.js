@@ -104,6 +104,8 @@ function loadDirectory() {
         let name;
         if (chat.id === "status@broadcast") {
             name = "Status";
+        } else if (chat.name) {
+            name = chat.name;
         } else if (store.messages[chat.id].array[0].key.participant) {
             if (store.groupMetadata[chat.id]) {
                 name = subject2string(store.groupMetadata[chat.id].subject);
@@ -143,6 +145,8 @@ function loadConversation(id) {
     if (address.value === id) {
         if (id === "status@broadcast") {
             addressee.innerHTML = "Status";
+        } else if (store.chats.dict[id].name) {
+            addressee.innerHTML = store.chats.dict[id].name;
         } else if (store.messages[id].array[0].key.participant) {
             addressee.innerHTML = subject2string(store.groupMetadata[id].subject);
         } else {
