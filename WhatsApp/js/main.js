@@ -177,6 +177,10 @@ function loadConversation(id) {
                     if (message.conversation) {
                         div.innerHTML += message.conversation;
                     } else if (message.extendedTextMessage) {
+                        if (message.extendedTextMessage.contextInfo && message.extendedTextMessage.contextInfo.quotedMessage) {
+                            const quotee = store.contacts[message.extendedTextMessage.contextInfo.participant] || message.extendedTextMessage.contextInfo.participant;
+                            div.innerHTML += "<blockquote><b>" + quotee + "</b>\n" + message.extendedTextMessage.contextInfo.quotedMessage.conversation + "</blockquote>";
+                        }
                         div.innerHTML += message.extendedTextMessage.text;
                     } else if (message.contactMessage) {
                         div.innerHTML += message.contactMessage.displayName + ": " + message.contactMessage.vcard;
