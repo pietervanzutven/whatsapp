@@ -178,8 +178,14 @@ function loadConversation(id) {
                         div.innerHTML += message.conversation;
                     } else if (message.extendedTextMessage) {
                         if (message.extendedTextMessage.contextInfo && message.extendedTextMessage.contextInfo.quotedMessage) {
-                            const quotee = store.contacts[message.extendedTextMessage.contextInfo.participant] || message.extendedTextMessage.contextInfo.participant;
-                            div.innerHTML += "<blockquote><b>" + quotee + "</b>\n" + message.extendedTextMessage.contextInfo.quotedMessage.conversation + "</blockquote>";
+                            let quote = "<b>" + (store.contacts[message.extendedTextMessage.contextInfo.participant] || message.extendedTextMessage.contextInfo.participant) + "</b>\n";
+                            if (message.extendedTextMessage.contextInfo.quotedMessage.conversation) {
+                                quote += message.extendedTextMessage.contextInfo.quotedMessage.conversation;
+                            } else if (message.extendedTextMessage.contextInfo.quotedMessage.imageMessage) {
+                                quote += "🖼\n";
+                                quote += message.extendedTextMessage.contextInfo.quotedMessage.imageMessage.caption;
+                            }
+                            div.innerHTML += "<blockquote>" + quote + "</blockquote>";
                         }
                         div.innerHTML += message.extendedTextMessage.text;
                     } else if (message.contactMessage) {
