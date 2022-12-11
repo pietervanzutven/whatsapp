@@ -225,7 +225,7 @@ function loadConversation(id) {
                 if (envelope.reactions) {
                     envelope.reactions.forEach(reaction => {
                         const react = store.messages[id].get(reaction.key.id);
-                        div.innerHTML += "\n\n<b>" + react.pushName + "</b>\n" + reaction.text + "\n<i>" + stamp2date(react) + "</i>";
+                        div.innerHTML += "\n\n<b>" + (store.contacts[reaction.key.participant] || react.pushName) + "</b>\n" + reaction.text + "\n<i>" + stamp2date(react) + "</i>";
                     });
                 }
 
