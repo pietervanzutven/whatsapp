@@ -182,8 +182,11 @@ function loadConversation(id) {
                             if (message.extendedTextMessage.contextInfo.quotedMessage.conversation) {
                                 quote += message.extendedTextMessage.contextInfo.quotedMessage.conversation;
                             } else if (message.extendedTextMessage.contextInfo.quotedMessage.imageMessage) {
-                                quote += "🖼\n";
+                                quote += "📷\n";
                                 quote += message.extendedTextMessage.contextInfo.quotedMessage.imageMessage.caption;
+                            } else if (message.extendedTextMessage.contextInfo.quotedMessage.videoMessage) {
+                                quote += "🎥\n";
+                                quote += message.extendedTextMessage.contextInfo.quotedMessage.videoMessage.caption;
                             }
                             div.innerHTML += "<blockquote>" + quote + "</blockquote>";
                         }
