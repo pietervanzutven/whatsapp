@@ -88,12 +88,6 @@ async function loadMetaData(ids) {
     }
 }
 
-function subject2string(subject) {
-    const chars = subject.split(",");
-    const array = new Uint8Array(chars.map(Number));
-    return new TextDecoder('utf8').decode(array);
-}
-
 function loadDirectory() {
     sender.innerHTML = sock.user.name;
     contacts.innerHTML = "";
@@ -108,7 +102,7 @@ function loadDirectory() {
             name = chat.name;
         } else if (store.messages[chat.id].array[0].key.participant) {
             if (store.groupMetadata[chat.id]) {
-                name = subject2string(store.groupMetadata[chat.id].subject);
+                name = store.groupMetadata[chat.id].subject;
             } else {
                 ids.push(chat.id);
                 name = chat.id;
@@ -148,7 +142,7 @@ function loadConversation(id) {
         } else if (store.chats.dict[id].name) {
             addressee.innerHTML = store.chats.dict[id].name;
         } else if (store.messages[id].array[0].key.participant) {
-            addressee.innerHTML = subject2string(store.groupMetadata[id].subject);
+            addressee.innerHTML = store.groupMetadata[id].subject;
         } else {
             addressee.innerHTML = store.contacts[id] || store.messages[id].array[0].pushName;
         }
